@@ -1,0 +1,1158 @@
+﻿<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0" name="viewport"/>
+<title>国の補助金・助成金を探す</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", sans-serif;
+    background: #f0f0f0;
+    color: #222;
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: #06C755;
+    color: white;
+    padding: 16px 16px 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .header-icon {
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+  }
+  .header h1 { font-size: 17px; font-weight: 700; line-height: 1.3; }
+  .header-sub { font-size: 11px; opacity: 0.85; margin-top: 1px; }
+
+  /* ─── CATEGORY GRID ─── */
+  .category-section {
+    background: white;
+    padding: 14px 12px 12px;
+    border-bottom: 1px solid #e8e8e8;
+  }
+  .category-label {
+    font-size: 12px; font-weight: 700; color: #888;
+    margin-bottom: 10px; letter-spacing: 0.03em;
+  }
+  .category-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .cat-tile {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 12px;
+    border-radius: 12px;
+    border: 2px solid #eee;
+    background: #fafafa;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: left;
+  }
+  .cat-tile.full-width { grid-column: 1 / -1; }
+  .cat-tile-emoji { font-size: 22px; flex-shrink: 0; }
+  .cat-tile-text  { font-size: 13px; font-weight: 600; color: #333; line-height: 1.3; }
+  .cat-tile-sub   { font-size: 10px; color: #999; margin-top: 1px; }
+
+  .cat-tile.active { border-color: #06C755; background: #f0faf4; }
+  .cat-tile.active .cat-tile-text { color: #00884a; }
+
+  .cat-tile[data-cat="equipment"] { border-color: #e0e0ff; background: #f5f5ff; }
+  .cat-tile[data-cat="equipment"].active { border-color: #5c6bc0; background: #ede7f6; }
+  .cat-tile[data-cat="equipment"].active .cat-tile-text { color: #3949ab; }
+
+  .cat-tile[data-cat="it"] { border-color: #e3f2fd; background: #f5fbff; }
+  .cat-tile[data-cat="it"].active { border-color: #1976d2; background: #e3f2fd; }
+  .cat-tile[data-cat="it"].active .cat-tile-text { color: #1565c0; }
+
+  .cat-tile[data-cat="sales"] { border-color: #fce4ec; background: #fff5f7; }
+  .cat-tile[data-cat="sales"].active { border-color: #e91e63; background: #fce4ec; }
+  .cat-tile[data-cat="sales"].active .cat-tile-text { color: #c2185b; }
+
+  .cat-tile[data-cat="newbiz"] { border-color: #fff3e0; background: #fffaf5; }
+  .cat-tile[data-cat="newbiz"].active { border-color: #f57c00; background: #fff3e0; }
+  .cat-tile[data-cat="newbiz"].active .cat-tile-text { color: #e65100; }
+
+  .cat-tile[data-cat="succession"] { border-color: #e8f5e9; background: #f5fff5; }
+  .cat-tile[data-cat="succession"].active { border-color: #388e3c; background: #e8f5e9; }
+  .cat-tile[data-cat="succession"].active .cat-tile-text { color: #2e7d32; }
+
+  .cat-tile[data-cat="large"] { border-color: #fbe9e7; background: #fff8f7; }
+  .cat-tile[data-cat="large"].active { border-color: #d84315; background: #fbe9e7; }
+  .cat-tile[data-cat="large"].active .cat-tile-text { color: #bf360c; }
+
+  .cat-tile[data-cat="saiyo"] { border-color: #ede9fe; background: #f8f5ff; }
+  .cat-tile[data-cat="saiyo"].active { border-color: #6d28d9; background: #ede9fe; }
+  .cat-tile[data-cat="saiyo"].active .cat-tile-text { color: #5b21b6; }
+
+  .cat-tile[data-cat="hataraki"] { border-color: #ccfbf1; background: #f0fdf9; }
+  .cat-tile[data-cat="hataraki"].active { border-color: #0f766e; background: #ccfbf1; }
+  .cat-tile[data-cat="hataraki"].active .cat-tile-text { color: #0f5f58; }
+
+  .cat-tile[data-cat="shokuba"] { border-color: #fef3c7; background: #fffdf0; }
+  .cat-tile[data-cat="shokuba"].active { border-color: #b45309; background: #fef3c7; }
+  .cat-tile[data-cat="shokuba"].active .cat-tile-text { color: #92400e; }
+
+  .cat-tile[data-cat="kenshu"] { border-color: #bae6fd; background: #f0f9ff; }
+  .cat-tile[data-cat="kenshu"].active { border-color: #0369a1; background: #bae6fd; }
+  .cat-tile[data-cat="kenshu"].active .cat-tile-text { color: #0c4a6e; }
+
+  /* ─── STATUS FILTER ─── */
+  .status-bar {
+    background: white;
+    padding: 10px 14px;
+    display: flex; gap: 8px;
+    border-bottom: 1px solid #e8e8e8;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .status-bar::-webkit-scrollbar { display: none; }
+  .status-tab {
+    flex-shrink: 0;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 12px; font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: all 0.15s;
+  }
+  .status-tab.all     { color: #555; border-color: #ccc; background: #f5f5f5; }
+  .status-tab.open    { color: #00994d; border-color: #00994d; background: #f0faf4; }
+  .status-tab.waiting { color: #c07800; border-color: #e8a800; background: #fffbf0; }
+  .status-tab.closed  { color: #999; border-color: #ddd; background: #f8f8f8; }
+  .status-tab.active     { opacity: 1; }
+  .status-tab:not(.active) { opacity: 0.55; }
+
+  .summary-bar {
+    background: #f7f7f7;
+    padding: 8px 14px;
+    font-size: 12px; color: #777;
+    border-bottom: 1px solid #e8e8e8;
+  }
+  .summary-bar span { color: #06C755; font-weight: 700; }
+
+  /* ─── CARD ─── */
+  .card-list {
+    padding: 12px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .card {
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    cursor: pointer;
+    transition: box-shadow 0.15s;
+  }
+  .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+  .card[data-hidden="true"] { display: none; }
+
+  /* type stripe */
+  .card.type-subsidy { border-left: 3px solid #06C755; }
+  .card.type-grant   { border-left: 3px solid #3b82f6; }
+
+  .card-header {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 14px 14px 10px;
+  }
+  .card-emoji { font-size: 26px; flex-shrink: 0; margin-top: 2px; }
+  .card-title-wrap { flex: 1; min-width: 0; }
+  .card-name { font-size: 15px; font-weight: 700; line-height: 1.35; color: #111; }
+  .card-type { font-size: 11px; color: #888; margin-top: 2px; }
+
+  .badge-row { display: flex; gap: 5px; align-items: center; flex-shrink: 0; flex-direction: column; }
+  .badge {
+    padding: 3px 9px; border-radius: 20px;
+    font-size: 11px; font-weight: 700; white-space: nowrap;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.25; }
+  }
+  .badge-open {
+    background: #f97316; color: white; border: none;
+    font-size: 12px; padding: 4px 11px 4px 9px;
+    box-shadow: 0 2px 8px rgba(249,115,22,0.45);
+    letter-spacing: 0.03em;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .badge-open::before {
+    content: "";
+    width: 7px; height: 7px;
+    background: white; border-radius: 50%;
+    flex-shrink: 0;
+    animation: pulse-dot 1.4s ease-in-out infinite;
+  }
+  .badge-wait   { background: #fff8e1; color: #bf8000; border: 1px solid #ffd54f; }
+  .badge-closed { background: #f0f0f0; color: #999;    border: 1px solid #ddd; }
+  .badge-new    { background: #eef4ff; color: #2563eb; border: 1px solid #bcd0ff; }
+  .badge-popular {
+    background: linear-gradient(135deg, #f59e0b, #fcd34d);
+    color: #78350f; border: none;
+    font-size: 11px; font-weight: 800;
+    padding: 2px 8px; border-radius: 20px;
+    box-shadow: 0 2px 5px rgba(245,158,11,0.45);
+    display: inline-block; vertical-align: middle;
+    margin-right: 5px; white-space: nowrap;
+  }
+    .badge-upcoming {
+    background: #e0f2fe; color: #0369a1;
+    border: 1px solid #7dd3fc;
+    font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 20px;
+    white-space: nowrap;
+  }
+  .type-label-subsidy { background: #e6f9ee; color: #00884a; border: 1px solid #b2e8cb; padding: 2px 7px; border-radius: 10px; font-size: 10px; font-weight: 700; }
+  .type-label-grant   { background: #dbeafe; color: #1d4ed8; border: 1px solid #93c5fd; padding: 2px 7px; border-radius: 10px; font-size: 10px; font-weight: 700; }
+
+  .card-desc {
+    padding: 0 14px 10px;
+    font-size: 13px; color: #444; line-height: 1.6;
+  }
+  .card-amount {
+    margin: 0 14px 10px;
+    background: #f6faf7; border: 1px solid #d5edd8;
+    border-radius: 10px; padding: 9px 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .amount-label { font-size: 11px; color: #777; white-space: nowrap; }
+  .amount-value { font-size: 14px; font-weight: 800; color: #00884a; flex: 1; line-height: 1.3; }
+  .amount-rate  { font-size: 12px; color: #555; text-align: right; line-height: 1.3; }
+  .amount-adoption {
+    font-size: 12px; color: #007a3e; font-weight: 700;
+    text-align: right; line-height: 1.3;
+    padding-left: 10px;
+    border-left: 1px solid #c8e6cb;
+    white-space: nowrap;
+  }
+
+  .card-tags {
+    padding: 0 14px 10px;
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .tag { padding: 3px 9px; border-radius: 5px; font-size: 11px; background: #f2f2f2; color: #555; }
+  .tag-green  { background: #e8f8ef; color: #00784a; }
+  .tag-blue   { background: #eef3ff; color: #2253c7; }
+  .tag-orange { background: #fff3e8; color: #b85a00; }
+  .tag-red    { background: #fff0f0; color: #c0392b; }
+  .tag-purple { background: #f3e8ff; color: #6d28d9; }
+
+  .card-deadline {
+    margin: 0 14px 12px;
+    display: flex; align-items: center; gap: 6px; font-size: 12px;
+  }
+  .deadline-icon { font-size: 14px; }
+  .deadline-text  { color: #c0392b; font-weight: 600; }
+  .deadline-label { color: #888; }
+
+  .card-toggle {
+    border-top: 1px solid #f0f0f0;
+    padding: 10px 14px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 12px; color: #06C755; font-weight: 600;
+  }
+  .toggle-arrow { font-size: 10px; }
+
+  .card-detail {
+    border-top: 1px solid #f0f0f0;
+    background: #fcfcfc; padding: 14px; display: none;
+  }
+  .card-detail.open { display: block; }
+  .detail-section { margin-bottom: 12px; }
+  .detail-section:last-child { margin-bottom: 0; }
+  .detail-title {
+    font-size: 12px; font-weight: 700; color: #06C755;
+    margin-bottom: 6px; display: flex; align-items: center; gap: 4px;
+  }
+  .detail-row {
+    display: flex; gap: 8px; margin-bottom: 4px;
+    font-size: 12.5px; color: #444; line-height: 1.5;
+  }
+  .detail-dot { color: #06C755; flex-shrink: 0; }
+
+  .schedule-list {
+    display: flex; flex-direction: column;
+    position: relative; padding-left: 20px;
+  }
+  .schedule-list::before {
+    content: ''; position: absolute;
+    left: 6px; top: 8px; bottom: 8px;
+    width: 2px; background: #d5edd8;
+  }
+  .schedule-item {
+    position: relative;
+    font-size: 12px; color: #555;
+    padding: 3px 0 3px 10px; line-height: 1.5;
+  }
+  .schedule-item::before {
+    content: ''; position: absolute;
+    left: -14px; top: 8px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #06C755; border: 2px solid white;
+    box-shadow: 0 0 0 1px #06C755;
+  }
+  .schedule-item.highlight { color: #c0392b; font-weight: 600; }
+  .schedule-item.highlight::before { background: #c0392b; box-shadow: 0 0 0 1px #c0392b; }
+
+  .official-link {
+    display: flex; align-items: center; gap: 6px;
+    padding: 9px 12px;
+    background: #e8f5ff; border: 1px solid #b5d9f7;
+    border-radius: 8px; font-size: 12.5px; color: #1a6bb5;
+    font-weight: 600; text-decoration: none; cursor: pointer;
+  }
+
+  .fab {
+    position: fixed; bottom: 24px; right: 16px;
+    background: #06C755; color: white; border: none;
+    border-radius: 28px; padding: 12px 18px;
+    font-size: 13px; font-weight: 700;
+    box-shadow: 0 4px 14px rgba(6,199,85,0.45);
+    cursor: pointer; display: flex; align-items: center; gap: 6px;
+    z-index: 200;
+  }
+
+  /* section divider between 補助金/助成金 */
+  .section-divider {
+    display: flex; align-items: center; gap: 10px;
+    padding: 4px 0;
+  }
+  .section-divider-line { flex: 1; height: 1px; background: #ddd; }
+  .section-divider-label {
+    font-size: 11px; font-weight: 700; padding: 3px 10px;
+    border-radius: 12px;
+  }
+  .sdl-subsidy { background: #e6f9ee; color: #00884a; border: 1px solid #b2e8cb; }
+  .sdl-grant   { background: #dbeafe; color: #1d4ed8; border: 1px solid #93c5fd; }
+</style>
+</head>
+<body>
+<!-- HEADER -->
+<div class="header">
+<div class="header-top">
+<div class="header-icon">🏛️</div>
+<div>
+<h1>国の補助金・助成金を探す</h1>
+<div class="header-sub">補助金12件・助成金6件 ｜ 更新日：2026/5/27</div>
+</div>
+</div>
+</div>
+<!-- CATEGORY GRID -->
+<div class="category-section">
+<div class="category-label">やりたいことから探す</div>
+<div class="category-grid">
+<div class="cat-tile full-width active" data-cat="all" onclick="filterCategory('all', this)">
+<span class="cat-tile-emoji">📋</span>
+<div>
+<div class="cat-tile-text">すべて見る</div>
+<div class="cat-tile-sub">全 17 件を表示</div>
+</div>
+</div>
+<div class="cat-tile" data-cat="equipment" onclick="filterCategory('equipment', this)">
+<span class="cat-tile-emoji">🏗️</span>
+<div><div class="cat-tile-text">設備投資</div><div class="cat-tile-sub">機械・システム・建物</div></div>
+</div>
+<div class="cat-tile" data-cat="it" onclick="filterCategory('it', this)">
+<span class="cat-tile-emoji">💻</span>
+<div><div class="cat-tile-text">IT・AI導入</div><div class="cat-tile-sub">ソフト・クラウド・AI</div></div>
+</div>
+<div class="cat-tile" data-cat="sales" onclick="filterCategory('sales', this)">
+<span class="cat-tile-emoji">📣</span>
+<div><div class="cat-tile-text">販路拡大</div><div class="cat-tile-sub">広告・Web・販促</div></div>
+</div>
+<div class="cat-tile" data-cat="newbiz" onclick="filterCategory('newbiz', this)">
+<span class="cat-tile-emoji">🚀</span>
+<div><div class="cat-tile-text">新事業進出</div><div class="cat-tile-sub">新製品・新市場開拓</div></div>
+</div>
+<div class="cat-tile" data-cat="succession" onclick="filterCategory('succession', this)">
+<span class="cat-tile-emoji">🤝</span>
+<div><div class="cat-tile-text">事業承継・M&amp;A</div><div class="cat-tile-sub">引継ぎ・後継者支援</div></div>
+</div>
+<div class="cat-tile" data-cat="large" onclick="filterCategory('large', this)">
+<span class="cat-tile-emoji">🏭</span>
+<div><div class="cat-tile-text">大規模投資</div><div class="cat-tile-sub">工場新設・億単位の投資</div></div>
+</div>
+<div class="cat-tile" data-cat="saiyo" onclick="filterCategory('saiyo', this)">
+<span class="cat-tile-emoji">🤝</span>
+<div><div class="cat-tile-text">採用</div><div class="cat-tile-sub">正社員化・高齢者・育休定着</div></div>
+</div>
+<div class="cat-tile" data-cat="hataraki" onclick="filterCategory('hataraki', this)">
+<span class="cat-tile-emoji">⏰</span>
+<div><div class="cat-tile-text">働き方</div><div class="cat-tile-sub">残業削減・最低賃金・有休促進</div></div>
+</div>
+<div class="cat-tile" data-cat="shokuba" onclick="filterCategory('shokuba', this)">
+<span class="cat-tile-emoji">🏢</span>
+<div><div class="cat-tile-text">職場改善</div><div class="cat-tile-sub">安全・高齢者対応・環境整備</div></div>
+</div>
+<div class="cat-tile" data-cat="kenshu" onclick="filterCategory('kenshu', this)">
+<span class="cat-tile-emoji">🎓</span>
+<div><div class="cat-tile-text">研修</div><div class="cat-tile-sub">DX・リスキリング・資格取得</div></div>
+</div>
+</div>
+</div>
+<!-- STATUS FILTER -->
+<div class="status-bar">
+<div class="status-tab all active" onclick="filterStatus('all', this)">すべて 17件</div>
+<div class="status-tab open" onclick="filterStatus('open', this)">🟢 申請受付中 17件</div>
+<div class="status-tab waiting" onclick="filterStatus('waiting', this)">🟡 公募待ち 0件</div>
+<div class="status-tab closed" onclick="filterStatus('closed', this)">⚪ 公募終了 1件</div>
+</div>
+<div class="summary-bar">現在 <span id="visibleCount">18</span> 件表示中</div>
+<!-- CARD LIST -->
+<div class="card-list">
+<!-- ─── 補助金ラベル ─── -->
+<div class="section-divider" id="divider-subsidy">
+<div class="section-divider-line"></div>
+<div class="section-divider-label sdl-subsidy">補助金 12件</div>
+<div class="section-divider-line"></div>
+</div>
+<!-- ① 省力化投資補助金 -->
+<div class="card type-subsidy" data-cat="equipment it" data-status="open">
+<div class="card-header">
+<div class="card-emoji">🤖</div>
+<div class="card-title-wrap">
+<div class="card-name"><span class="badge badge-popular">🔥 人気</span>省力化投資補助金</div>
+<div class="card-type">設備投資・業務自動化・DX推進</div>
+</div>
+<div class="badge-row">
+<div class="badge badge-open">申請受付中</div>
+<div class="type-label-subsidy">補助金</div>
+</div>
+</div>
+<div class="card-desc">機械設備やシステムの導入で作業を自動化・効率化したい会社向けの補助金です。新事業でなく既存事業の改善でも申請しやすく、製造業から飲食・サービス業まで幅広い業種が対象です。</div>
+<div class="card-amount">
+<div class="amount-label">補助額目安</div>
+<div class="amount-value">500万円〜1億円</div>
+<div class="amount-rate">補助率<br/>1/2〜2/3</div><div class="amount-adoption">直近採択率<br/>69.3%</div>
+</div>
+<div class="card-tags">
+<span class="tag tag-green">中小企業・小規模</span>
+<span class="tag tag-green">個人開業医 可</span>
+<span class="tag tag-orange">従業員1名以上</span>
+</div>
+<div class="card-deadline">
+<span class="deadline-icon">📅</span>
+<span class="deadline-label">直近公募締切：</span>
+<span class="deadline-text">7回　7月下旬</span>
+</div>
+<div class="card-toggle" onclick="toggleDetail(this)">
+<span>詳しく見る（申請条件・スケジュール）</span><span class="toggle-arrow">▼</span>
+</div>
+<div class="card-detail">
+<div class="detail-section">
+<div class="detail-title">✅ 主な申請条件</div>
+<div class="detail-row"><span class="detail-dot">•</span><span>対象：中小企業・小規模・個人開業医・NPO・社会福祉法人</span></div>
+<div class="detail-row"><span class="detail-dot">•</span><span>従業員1名以上（カタログ型なら0名でも可）</span></div>
+<div class="detail-row"><span class="detail-dot">•</span><span>自社の省力化・自動化・DX目的の設備投資</span></div>
+<div class="detail-row"><span class="detail-dot">•</span><span>❌ 直近10ヶ月以内にものづくり・IT・持続化補助金の交付決定を受けた事業者は申請不可</span></div>
+</div><div class="detail-section"><div class="detail-title">📦 補助対象経費</div><div class="detail-row"><span class="detail-dot">•</span><span>機械装置・システム構築費（主な対象）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>機械装置・システム以外の経費は500万円が上限</span></div><div class="detail-row"><span class="detail-dot">•</span><span>オーダーメイド設備・汎用機器の組み合わせも可</span></div></div>
+<div class="detail-section">
+<div class="detail-title">💰 補助額（従業員数別）</div>
+<div class="detail-row"><span class="detail-dot">•</span><span>5人以下：上限750万円（賃上げ特例1,000万円）</span></div>
+<div class="detail-row"><span class="detail-dot">•</span><span>6〜20人：上限1,500万円（同2,000万円）</span></div>
+<div class="detail-row"><span class="detail-dot">•</span><span>21〜50人：上限3,000万円（同4,000万円）</span></div>
+<div class="detail-row"><span class="detail-dot">•</span><span>101人以上：上限8,000万円（同1億円）</span></div>
+</div>
+<div class="detail-section">
+<div class="detail-title">🗓 スケジュール（7回）</div>
+<div class="schedule-list"><div class="schedule-item">5月〜6月　　事業計画書作成</div><div class="schedule-item highlight">7月下旬　　応募締切</div><div class="schedule-item">10月　　　 採択結果発表</div><div class="schedule-item">11月　　　 交付申請・交付決定</div><div class="schedule-item">12月〜翌5月 機械発注・納品・支払い</div><div class="schedule-item">翌6月　　　実績報告</div><div class="schedule-item">翌8月　　　補助金入金</div></div>
+</div>
+<div class="detail-section">
+<a class="official-link" href="https://shoryokuka.smrj.go.jp/ippan/" target="_blank">🌐 公式サイトを開く（一般型）</a>
+</div>
+</div>
+</div>
+<!-- ② 小規模事業者持続化補助金 -->
+<div class="card type-subsidy" data-cat="sales" data-status="open">
+<div class="card-header">
+<div class="card-emoji">📣</div>
+<div class="card-title-wrap">
+<div class="card-name"><span class="badge badge-popular">🔥 人気</span>小規模事業者持続化補助金</div>
+<div class="card-type">販路開拓・業務効率化・販売促進</div>
+</div>
+<div class="badge-row">
+<div class="badge badge-open">申請受付中</div>
+<div class="type-label-subsidy">補助金</div>
+</div>
+</div>
+<div class="card-desc">小規模企業・個人事業主が集客や売上拡大の取り組みに使える補助金です。広告・Web制作・店舗改装・設備購入など幅広い費用が対象で、比較的申請しやすい制度です。</div>
+<div class="card-amount">
+<div class="amount-label">補助額目安</div>
+<div class="amount-value">50万円〜250万円</div>
+<div class="amount-rate">補助率<br/>2/3〜3/4</div><div class="amount-adoption">直近採択率<br/>51%</div>
+</div>
+<div class="card-tags">
+<span class="tag tag-green">従業員0人でも申請可</span>
+<span class="tag tag-blue">創業者向け枠あり</span>
+<span class="tag tag-orange">商業・サービス業5人以下</span>
+</div>
+<div class="card-deadline">
+<span class="deadline-icon">⏳</span>
+<span class="deadline-label">直近公募締切：</span>
+<span class="deadline-text">20回　夏頃の見込み</span>
+</div>
+<div class="card-toggle" onclick="toggleDetail(this)">
+<span>詳しく見る（申請条件・スケジュール）</span><span class="toggle-arrow">▼</span>
+</div>
+<div class="card-detail">
+<div class="detail-section">
+<div class="detail-title">✅ 主な申請条件</div>
+<div class="detail-row"><span class="detail-dot">•</span><span>対象：小規模事業者（商業・サービス業5人以下、製造業等20人以下）</span></div>
+<div class="detail-row"><span class="detail-dot">•</span><span>株式会社・合同会社・個人事業主</span></div>
+<div class="detail-row"><span class="detail-dot">•</span><span>商工会等の支援確認を経た事業計画書が必要</span></div>
+<div class="detail-row"><span class="detail-dot">•</span><span>❌ 対象外：医師・歯科医師（保険診療）・医療法人・学校法人</span></div>
+<div class="detail-row"><span class="detail-dot">•</span><span>Web関連費は申請経費全体の1/4まで（最大50万円）</span></div>
+</div><div class="detail-section"><div class="detail-title">📦 補助対象経費</div><div class="detail-row"><span class="detail-dot">•</span><span>広告費・チラシ・ホームページ制作費</span></div><div class="detail-row"><span class="detail-dot">•</span><span>店舗改装費・設備購入費</span></div><div class="detail-row"><span class="detail-dot">•</span><span>IT・機器導入費</span></div><div class="detail-row"><span class="detail-dot">•</span><span>❌ Web関連費は全体の1/4まで（最大50万円）</span></div></div>
+<div class="detail-section">
+<div class="detail-title">💰 申請類型別補助額</div>
+<div class="detail-row"><span class="detail-dot">•</span><span>通常枠：50万円（2/3）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>インボイス枠：50万円（2/3）</span></div>
+<div class="detail-row"><span class="detail-dot">•</span><span>賃上げ特例枠：150万円（2/3〜3/4）</span></div>
+<div class="detail-row"><span class="detail-dot">•</span><span>創業型：200万円（2/3）</span></div>
+</div>
+<div class="detail-section"><div class="detail-title">🗓 スケジュール（20回）</div><div class="schedule-list"><div class="schedule-item">6月〜7月　　事業計画書作成</div><div class="schedule-item highlight">8月　　　　応募締切</div><div class="schedule-item">11月　　　 採択結果発表</div><div class="schedule-item">12月　　　 交付申請・交付決定</div><div class="schedule-item">翌1月〜翌6月　商品発注・納品・支払い</div><div class="schedule-item">翌7月　　　実績報告</div><div class="schedule-item">翌8月　　　補助金入金</div></div></div><div class="detail-section">
+<a class="official-link" href="https://r6.jizokukahojokin.info/" target="_blank">🌐 公式サイトを開く</a>
+</div>
+</div>
+</div>
+<!-- ③ 新事業進出・ものづくり補助金（統合新制度） -->
+<div class="card type-subsidy" data-cat="newbiz equipment" data-status="waiting">
+<div class="card-header">
+<div class="card-emoji">🏭</div>
+<div class="card-title-wrap">
+<div class="card-name">新事業進出・ものづくり補助金<br/><small style="font-size:11px;font-weight:normal;color:#888">（2026年度 新統合制度）</small></div>
+<div class="card-type">革新的製品開発・新市場進出・海外展開</div>
+</div>
+<div class="badge-row">
+<div class="badge badge-open">申請受付中</div>
+<div class="type-label-subsidy">補助金</div>
+</div>
+</div>
+<div class="card-desc">設備投資・新商品開発・新事業進出に活用できる大型補助金が2026年に統合新設されます。申請開始は2026年8月予定のため、今から準備を進めておきたい制度です。</div>
+<div class="card-amount">
+<div class="amount-label">補助額目安</div>
+<div class="amount-value">750万円〜9,000万円</div>
+<div class="amount-rate">補助率<br/>1/2〜2/3</div><div class="amount-adoption" style="color:#aaa;">直近採択率<br/>発表なし</div>
+</div>
+<div class="card-tags"><span class="tag badge-upcoming" style="font-size:12px; font-weight:700; padding:4px 10px;">初回公募待ち</span>
+<span class="tag tag-blue">革新的新製品・サービス枠</span>
+<span class="tag tag-blue">新事業進出枠</span>
+<span class="tag tag-blue">グローバル枠</span>
+</div>
+<div class="card-deadline">
+<span class="deadline-icon">⏳</span>
+<span class="deadline-label">直近公募締切：</span>
+<span class="deadline-text">初回　8月の見込み</span>
+</div>
+<div class="card-toggle" onclick="toggleDetail(this)">
+<span>詳しく見る</span><span class="toggle-arrow">▼</span>
+</div>
+<div class="card-detail">
+<div class="detail-section">
+<div class="detail-title">📋 3つの申請枠</div>
+<div class="detail-row"><span class="detail-dot">•</span><span>革新的新製品・サービス枠：最大3,500万円（旧ものづくり補助金）</span></div>
+<div class="detail-row"><span class="detail-dot">•</span><span>新事業進出枠：最大9,000万円（旧新事業進出補助金）</span></div>
+<div class="detail-row"><span class="detail-dot">•</span><span>グローバル枠：最大9,000万円（海外展開・輸出体制強化）</span></div>
+</div>
+<div class="detail-section"><div class="detail-title">📦 補助対象経費</div><div class="detail-row"><span class="detail-dot">•</span><span>機械装置・システム構築費（50万円以上が必須）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>建物費・外注費・専門家費</span></div></div><div class="detail-section">
+<div class="official-link" style="background:#f5f5f5; border-color:#ddd; color:#999; cursor:default;">🌐 公式HP未公開</div>
+</div>
+</div>
+</div>
+<!-- ④ ものづくり補助金（公募終了） -->
+<div class="card type-subsidy" data-cat="equipment" data-status="closed">
+<div class="card-header">
+<div class="card-emoji">⚙️</div>
+<div class="card-title-wrap">
+<div class="card-name">ものづくり補助金</div>
+<div class="card-type">革新的製品・サービス開発・生産プロセス改善</div>
+</div>
+<div class="badge-row">
+<div class="badge badge-closed">公募終了</div>
+<div class="type-label-subsidy">補助金</div>
+</div>
+</div>
+<div class="card-desc">革新的な製品・サービスの開発や生産設備の高付加価値化に取り組む会社を支援する補助金です。次回から新制度に統合されますが、現在も申請受付中です。</div>
+<div class="card-amount">
+<div class="amount-label">補助額目安</div>
+<div class="amount-value">750万円〜3,500万円</div>
+<div class="amount-rate">補助率<br/>1/2〜2/3</div><div class="amount-adoption">直近採択率<br/>34.1%</div>
+</div>
+<div class="card-tags">
+<span class="tag">23次 5月8日締切済</span>
+<span class="tag">次回から統合新制度へ移行</span>
+</div>
+<div class="card-deadline">
+<span class="deadline-icon">🔚</span>
+<span class="deadline-label">直近公募締切：</span>
+<span class="deadline-text">新制度（統合）へ移行</span>
+</div>
+<div class="card-toggle" onclick="toggleDetail(this)">
+<span>詳しく見る</span><span class="toggle-arrow">▼</span>
+</div>
+<div class="card-detail">
+<div class="detail-section">
+<div class="detail-title">ℹ️ 制度移行について</div>
+<div class="detail-row"><span class="detail-dot">•</span><span>23次公募（令和8年5月8日締切）をもって現行制度は終了</span></div>
+<div class="detail-row"><span class="detail-dot">•</span><span>直近採択率：21次 34.1%（1,872件申請・638件採択）</span></div>
+</div>
+<div class="detail-section"><div class="detail-title">📦 補助対象経費</div><div class="detail-row"><span class="detail-dot">•</span><span>機械装置・システム（50万円以上が必須）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>設備工事費・外注費</span></div></div><div class="detail-section">
+<a class="official-link" href="https://portal.monodukuri-hojo.jp/" target="_blank">🌐 公式サイトを開く</a>
+</div>
+</div>
+</div>
+<!-- ⑤ 新事業進出補助金 -->
+<div class="card type-subsidy" data-cat="newbiz" data-status="open">
+<div class="card-header">
+<div class="card-emoji">🚀</div>
+<div class="card-title-wrap">
+<div class="card-name">新事業進出補助金</div>
+<div class="card-type">新市場開拓・新事業・高付加価値化</div>
+</div>
+<div class="badge-row">
+<div class="badge badge-open">申請受付中</div>
+<div class="type-label-subsidy">補助金</div>
+</div>
+</div>
+<div class="card-desc">これまでとは異なる新しい分野への事業展開を支援する補助金です。新市場開拓や高付加価値事業への転換を目指す企業にとって大きな後押しとなります。なお、現行制度は今回の公募が最後で、次回から新事業進出・ものづくり補助金に統合されます。</div>
+<div class="card-amount">
+<div class="amount-label">補助額目安</div>
+<div class="amount-value">750万円〜9,000万円</div>
+<div class="amount-rate">補助率<br/>1/2〜2/3</div><div class="amount-adoption">直近採択率<br/>35.4%</div>
+</div>
+<div class="card-tags"><span class="tag tag-orange">従業員1名以上</span>
+<span class="tag tag-blue">普及度・認知度が低いか</span><span class="tag tag-blue">新高付加価値に繋がるか</span><span class="tag tag-blue">社会的意義</span><span class="tag tag-orange">次回から統合新制度へ移行</span></div>
+<div class="card-deadline">
+<span class="deadline-icon">📅</span>
+<span class="deadline-label">直近公募締切：</span>
+<span class="deadline-text">4回　6月19日</span>
+</div>
+<div class="card-toggle" onclick="toggleDetail(this)">
+<span>詳しく見る（申請条件・スケジュール）</span><span class="toggle-arrow">▼</span>
+</div>
+<div class="card-detail"><div class="detail-section">
+<div class="detail-title">ℹ️ 制度移行について</div>
+<div class="detail-row"><span class="detail-dot">•</span><span>現行の新事業進出補助金は今回の公募（4回）が最後</span></div>
+<div class="detail-row"><span class="detail-dot">•</span><span>2026年8月以降、新事業進出・ものづくり補助金（統合新制度）に移行予定</span></div>
+</div>
+<div class="detail-section">
+<div class="detail-title">✅ 主な申請条件</div>
+<div class="detail-row"><span class="detail-dot">•</span><span>事業予算1,500万円以上の計画が必要</span></div>
+<div class="detail-row"><span class="detail-dot">•</span><span>計画最終年に新事業売上10%以上または付加価値額15%以上</span></div>
+<div class="detail-row"><span class="detail-dot">•</span><span>建物費または機械装置・システム費を含む設備投資が必須</span></div>
+<div class="detail-row"><span class="detail-dot">•</span><span>❌ 直近16ヶ月以内に新事業・再構築・ものづくりに採択された方は申請不可</span></div><div class="detail-row"><span class="detail-dot">•</span><span>❌ 創業1年未満の事業者は対象外</span></div>
+</div><div class="detail-section"><div class="detail-title">📦 補助対象経費</div><div class="detail-row"><span class="detail-dot">•</span><span>建物費・機械装置・システム構築費（いずれかが必須）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>❌ 広告費のみは対象外</span></div></div><div class="detail-section"><div class="detail-title">💰 補助額（従業員数別）</div><div class="detail-row"><span class="detail-dot">•</span><span>20人以下：上限2,500万円（賃上げ特例3,000万円）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>21〜50人：上限4,000万円（同5,000万円）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>51〜100人：上限5,500万円（同7,000万円）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>101人以上：上限7,000万円（同9,000万円）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>補助率：1/2（小規模等2/3）／最低申請額750万円</span></div></div>
+<div class="detail-section">
+<div class="detail-title">🗓 スケジュール（4回）</div>
+<div class="schedule-list"><div class="schedule-item">4月〜5月　　事業計画書作成</div><div class="schedule-item highlight">6月19日　　応募締切</div><div class="schedule-item">9月　　　　採択結果発表</div><div class="schedule-item">11月　　　 交付申請・交付決定</div><div class="schedule-item">12月〜翌2月 設備発注・納品・支払い</div><div class="schedule-item">翌8月　　　実績報告</div><div class="schedule-item">翌10月　　 補助金入金</div></div>
+</div>
+<div class="detail-section">
+<a class="official-link" href="https://shinjigyou-shinshutsu.smrj.go.jp/" target="_blank">🌐 公式サイトを開く</a>
+</div>
+</div>
+</div>
+<!-- ⑥ IT導入補助金 -->
+<div class="card type-subsidy" data-cat="it sales" data-status="open">
+<div class="card-header">
+<div class="card-emoji">💻</div>
+<div class="card-title-wrap">
+<div class="card-name">デジタル化・AI導入補助金<br/><small style="font-size:11px;font-weight:normal;color:#888">（IT導入補助金）</small></div>
+<div class="card-type">ITツール・AIシステム・DX推進</div>
+</div>
+<div class="badge-row">
+<div class="badge badge-open">申請受付中</div>
+<div class="type-label-subsidy">補助金</div>
+</div>
+</div>
+<div class="card-desc">業務改善に役立つITツール・AIの導入費用を支援する補助金です。ソフトウェア・クラウドサービス・セキュリティ対策まで幅広く対象で、従業員ゼロでも申請できます。</div>
+<div class="card-amount">
+<div class="amount-label">補助額目安</div>
+<div class="amount-value">5万円〜450万円</div>
+<div class="amount-rate">補助率<br/>最大4/5</div><div class="amount-adoption">直近採択率<br/>44%（2025年）</div>
+</div>
+<div class="card-tags">
+<span class="tag tag-green">従業員0人でも申請可</span>
+<span class="tag tag-blue">医療法人 可</span>
+<span class="tag tag-blue">登録済みITツールが対象</span><span class="tag tag-orange">1期以上の税務申告済み</span></div>
+<div class="card-deadline">
+<span class="deadline-icon">📅</span>
+<span class="deadline-label">直近公募締切：</span>
+<span class="deadline-text">2次　6月15日</span>
+</div>
+<div class="card-toggle" onclick="toggleDetail(this)">
+<span>詳しく見る（申請条件・スケジュール）</span><span class="toggle-arrow">▼</span>
+</div>
+<div class="card-detail">
+<div class="detail-section">
+<div class="detail-title">⚠️ 注意</div>
+<div class="detail-row"><span class="detail-dot">•</span><span>「キャッシュバックで実質負担なし」などの勧誘は要注意。不正受給増加で審査が厳格化（2025年採択率44%）</span></div>
+</div><div class="detail-section"><div class="detail-title">📦 補助対象経費</div><div class="detail-row"><span class="detail-dot">•</span><span>ソフトウェア購入費</span></div><div class="detail-row"><span class="detail-dot">•</span><span>クラウド利用料（最大2年分）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>導入・運用・研修コンサル費</span></div><div class="detail-row"><span class="detail-dot">•</span><span>データ連携費・保守費用</span></div><div class="detail-row"><span class="detail-dot">•</span><span>❌ Web・HPのみは対象外</span></div><div class="detail-row"><span class="detail-dot">•</span><span>⚠️ PC・タブレットはソフトとセットの場合のみ（上限10万円/台）</span></div></div><div class="detail-section">
+<div class="detail-title">💰 補助額（区分別）</div>
+<div class="detail-row"><span class="detail-dot">•</span><span>通常枠（1プロセス以上）：5〜150万円未満、補助率1/2〜2/3</span></div>
+<div class="detail-row"><span class="detail-dot">•</span><span>通常枠（4プロセス以上）：150〜450万円、補助率1/2〜2/3</span></div>
+<div class="detail-row"><span class="detail-dot">•</span><span>インボイス枠：50〜350万円、補助率3/4〜4/5</span></div>
+<div class="detail-row"><span class="detail-dot">•</span><span>セキュリティ枠：最大150万円</span></div>
+<div class="detail-row"><span class="detail-dot">•</span><span>複数社連携枠：最大3,000万円</span></div>
+</div><div class="detail-section"><div class="detail-title">🗓 スケジュール（2次）</div><div class="schedule-list"><div class="schedule-item">5月〜6月　　導入ツール選定・申請準備</div><div class="schedule-item highlight">6月15日　　応募締切（2次）</div><div class="schedule-item">7月中　　　採択結果発表・交付決定</div><div class="schedule-item">8月〜翌1月　発注・納品・支払い</div><div class="schedule-item">翌2月　　　実績報告</div><div class="schedule-item">翌3月　　　補助金入金</div></div></div><div class="detail-section">
+<a class="official-link" href="https://it-shien.smrj.go.jp/" target="_blank">🌐 公式サイトを開く</a>
+</div></div>
+</div>
+<!-- ⑦ 事業承継・M&A補助金 -->
+<div class="card type-subsidy" data-cat="succession equipment" data-status="open">
+<div class="card-header">
+<div class="card-emoji">🤝</div>
+<div class="card-title-wrap">
+<div class="card-name">事業承継・M&amp;A補助金</div>
+<div class="card-type">事業承継・引き継ぎ・M&amp;A専門家活用</div>
+</div>
+<div class="badge-row">
+<div class="badge badge-open">申請受付中</div>
+<div class="type-label-subsidy">補助金</div>
+</div>
+</div>
+<div class="card-desc">会社の引継ぎ・M&amp;A・廃業後の再挑戦を進める際の費用負担を軽減する補助金です。専門家への相談費・仲介手数料・設備投資など多様な費用が対象となります。</div>
+<div class="card-amount">
+<div class="amount-label">補助額目安</div>
+<div class="amount-value">300万円〜2,000万円</div>
+<div class="amount-rate">補助率<br/>1/2〜2/3</div><div class="amount-adoption">直近採択率<br/>61%</div>
+</div>
+<div class="card-tags">
+<span class="tag tag-green">従業員0人でも申請可</span>
+<span class="tag tag-blue">M&amp;A仲介費用も対象</span>
+<span class="tag tag-blue">廃業+再チャレンジ枠あり</span>
+<span class="tag tag-green">小規模売り手支援類型（新設）</span></div>
+<div class="card-deadline">
+<span class="deadline-icon">📅</span>
+<span class="deadline-label">直近公募締切：</span>
+<span class="deadline-text">15次　7月24日</span>
+</div>
+<div class="card-toggle" onclick="toggleDetail(this)">
+<span>詳しく見る</span><span class="toggle-arrow">▼</span>
+</div>
+<div class="card-detail">
+<div class="detail-section"><div class="detail-title">✅ 主な申請条件</div><div class="detail-row"><span class="detail-dot">•</span><span>対象：日本国内の中小企業・小規模事業者（法人・個人問わず）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>開業医も可（医療法人は対象外、一部枠のみ）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>従業員0人でも申請可</span></div><div class="detail-row"><span class="detail-dot">•</span><span>買い手・売り手共に3期分の決算・申告が必要</span></div><div class="detail-row"><span class="detail-dot">•</span><span>❌ 譲渡価格（売買代金）は補助対象外</span></div></div><div class="detail-section"><div class="detail-title">📦 補助対象経費</div><div class="detail-row"><span class="detail-dot">•</span><span>承継促進枠：建物・設備・外注費等</span></div><div class="detail-row"><span class="detail-dot">•</span><span>専門家活用枠：M&amp;A仲介手数料・DD費用</span></div><div class="detail-row"><span class="detail-dot">•</span><span>PMI推進枠：PMI専門家費・統合関連設備投資費</span></div><div class="detail-row"><span class="detail-dot">•</span><span>廃業再チャレンジ枠：廃業費・在庫廃棄費・再スタートの設備費</span></div></div><div class="detail-section"><div class="detail-title">💰 補助額（支援枠別）</div><div class="detail-row"><span class="detail-dot">•</span><span>事業承継促進枠：800〜1,000万円（補助率1/2〜2/3）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>専門家活用枠：買手2,000万円・売手800万円（同上）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>└ 小規模売り手支援類型（15次新設）：小規模な売り手専用の簡易類型（詳細は公式要領参照）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>PMI推進枠：150〜1,000万円（同上）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>廃業・再チャレンジ枠：300万円（同上・他枠と併用可）</span></div></div><div class="detail-section"><div class="detail-title">🗓 スケジュール（15次）</div><div class="schedule-list"><div class="schedule-item">6月〜7月　　申請準備・書類収集</div><div class="schedule-item highlight">8月頃　　　応募締切（15次）</div><div class="schedule-item">9月　　　　採択結果発表</div><div class="schedule-item">10月　　　 交付申請・交付決定</div><div class="schedule-item">11月　　　 補助事業開始</div><div class="schedule-item">翌3月　　　実績報告</div><div class="schedule-item">翌5月　　　補助金入金</div></div></div><div class="detail-section">
+<a class="official-link" href="https://shoukei-mahojokin.go.jp/r7h/" target="_blank">🌐 公式サイトを開く</a>
+</div></div>
+</div>
+<!-- ⑧ 中小企業成長加速化補助金 -->
+<div class="card type-subsidy" data-cat="large" data-status="open">
+<div class="card-header">
+<div class="card-emoji">📈</div>
+<div class="card-title-wrap">
+<div class="card-name">中小企業成長加速化補助金</div>
+<div class="card-type">売上高100億円を目指す大型成長投資</div>
+</div>
+<div class="badge-row">
+<div class="badge badge-open">申請受付中</div>
+<div class="type-label-subsidy">補助金</div>
+</div>
+</div>
+<div class="card-desc">売上高100億円を目指す中小企業向けの大型補助金です。設備・DX・M&amp;A・海外展開など幅広い成長投資に活用でき、最大5億円を補助します。</div>
+<div class="card-amount">
+<div class="amount-label">補助額目安</div>
+<div class="amount-value">5,000万円〜5億円</div>
+<div class="amount-rate">補助率<br/>1/2以内</div><div class="amount-adoption" style="color:#c0392b; font-weight:700;">直近採択率<br/>16.3%</div>
+</div>
+<div class="card-tags">
+<span class="tag tag-orange">対象：売上高10億〜100億円未満</span>
+<span class="tag tag-red">最低投資額 1億円以上</span>
+</div>
+<div class="card-deadline">
+<span class="deadline-icon">⏳</span>
+<span class="deadline-label">直近公募締切：</span>
+<span class="deadline-text">3次　秋頃の見込み</span>
+</div>
+<div class="card-toggle" onclick="toggleDetail(this)">
+<span>詳しく見る</span><span class="toggle-arrow">▼</span>
+</div>
+<div class="card-detail">
+<div class="detail-section"><div class="detail-title">✅ 主な申請条件</div><div class="detail-row"><span class="detail-dot">•</span><span>対象：売上高10億円以上100億円未満の中小企業・小規模事業者</span></div><div class="detail-row"><span class="detail-dot">•</span><span>「売上高100億円を目指す」100億宣言を申請前に公表</span></div><div class="detail-row"><span class="detail-dot">•</span><span>補助対象経費1億円以上の投資が必須</span></div><div class="detail-row"><span class="detail-dot">•</span><span>賃上げ：補助事業終了後3年間の年平均4.5%以上</span></div><div class="detail-row"><span class="detail-dot">•</span><span>補助事業期間：交付決定から24カ月以内</span></div><div class="detail-row"><span class="detail-dot">•</span><span>❌ 採択率16.3%（書類審査＋プレゼン審査の2段階）</span></div></div><div class="detail-section"><div class="detail-title">📦 補助対象経費</div><div class="detail-row"><span class="detail-dot">•</span><span>建物費（拠点新設・増築等）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>機械装置費（器具・備品費含む）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>ソフトウェア費・外注費・専門家費</span></div><div class="detail-row"><span class="detail-dot">•</span><span>❌ 土地代は対象外</span></div></div><div class="detail-section"><div class="detail-title">💰 補助額</div><div class="detail-row"><span class="detail-dot">•</span><span>補助上限額：最大5億円（下限5,000万円）</span></div></div><div class="detail-section"><div class="detail-title">🗓 スケジュール（3次）</div><div class="schedule-list"><div class="schedule-item">事前準備　　100億宣言の公表</div><div class="schedule-item highlight">秋頃　　　　応募締切（3次・見込み）</div><div class="schedule-item">翌年春　　　一次審査結果（書類審査）</div><div class="schedule-item">翌年夏　　　二次審査（プレゼンテーション）</div><div class="schedule-item">翌年秋　　　採択結果発表</div><div class="schedule-item">翌年冬　　　交付申請・交付決定・発注開始</div><div class="schedule-item">3年以内　　実績報告・補助金入金</div></div></div><div class="detail-section">
+<a class="official-link" href="https://growth-100-oku.smrj.go.jp/index.html" target="_blank">🌐 公式サイトを開く</a>
+</div></div>
+</div>
+<!-- ⑨ 大規模成長投資補助金 -->
+<div class="card type-subsidy" data-cat="large" data-status="open">
+<div class="card-header">
+<div class="card-emoji">🏗️</div>
+<div class="card-title-wrap">
+<div class="card-name">大規模成長投資補助金</div>
+<div class="card-type">工場新設・大規模設備投資（20億円〜）</div>
+</div>
+<div class="badge-row">
+<div class="badge badge-open">申請受付中</div>
+<div class="type-label-subsidy">補助金</div>
+</div>
+</div>
+<div class="card-desc">工場建設・拠点新設などの大規模な設備投資を検討する企業向け補助金です。最大50億円という日本最大級の規模で、成長投資を力強く後押しします。</div>
+<div class="card-amount">
+<div class="amount-label">補助額目安</div>
+<div class="amount-value">15億円〜50億円</div>
+<div class="amount-rate">補助率<br/>1/3以内</div><div class="amount-adoption" style="color:#00884a; font-weight:700;">直近採択率<br/>50.7%</div>
+</div>
+<div class="card-tags">
+<span class="tag tag-red">最低投資額 20億円以上</span>
+<span class="tag tag-blue">共同申請可（最大10社）</span>
+</div>
+<div class="card-deadline">
+<span class="deadline-icon">⏳</span>
+<span class="deadline-label">直近公募締切：</span>
+<span class="deadline-text">6次　年末頃の見込み</span>
+</div>
+<div class="card-toggle" onclick="toggleDetail(this)">
+<span>詳しく見る</span><span class="toggle-arrow">▼</span>
+</div>
+<div class="card-detail">
+<div class="detail-section"><div class="detail-title">✅ 主な申請条件</div><div class="detail-row"><span class="detail-dot">•</span><span>対象：日本国内に本社を置く中堅・中小企業</span></div><div class="detail-row"><span class="detail-dot">•</span><span>一般枠：20億円以上の投資が必要</span></div><div class="detail-row"><span class="detail-dot">•</span><span>100億宣言企業枠：15億円以上の投資が必要</span></div><div class="detail-row"><span class="detail-dot">•</span><span>賃上げ：補助事業終了後3年間、年平均4.5〜5%以上</span></div><div class="detail-row"><span class="detail-dot">•</span><span>コンソーシアム（複数社共同）申請可・最大10社</span></div></div><div class="detail-section"><div class="detail-title">📦 補助対象経費</div><div class="detail-row"><span class="detail-dot">•</span><span>建物費（拠点新設・増築等）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>機械装置・器具備品費</span></div><div class="detail-row"><span class="detail-dot">•</span><span>ソフトウェア費・外注費</span></div></div><div class="detail-section"><div class="detail-title">💰 補助額</div><div class="detail-row"><span class="detail-dot">•</span><span>補助上限額：最大50億円</span></div></div><div class="detail-section"><div class="detail-title">🗓 スケジュール（6次）</div><div class="schedule-list"><div class="schedule-item">事前準備　　申請計画・賃上げ計画の策定</div><div class="schedule-item highlight">年末頃　　　応募締切（6次・見込み）</div><div class="schedule-item">翌年春　　　一次審査結果（書類審査）</div><div class="schedule-item">翌年夏　　　二次審査（プレゼンテーション）</div><div class="schedule-item">翌年秋　　　採択結果発表</div><div class="schedule-item">翌年冬　　　交付申請・交付決定・発注開始</div><div class="schedule-item">3年以内　　実績報告・補助金入金</div></div></div><div class="detail-section">
+<a class="official-link" href="https://seichotoushi-hojo.jp/" target="_blank">🌐 公式サイトを開く</a>
+</div></div>
+</div>
+<!-- ⑩ 省エネ・非化石転換補助金 -->
+<div class="card type-subsidy" data-cat="equipment" data-status="open">
+<div class="card-header">
+<div class="card-emoji">🌿</div>
+<div class="card-title-wrap">
+<div class="card-name">省エネ・非化石転換補助金</div>
+<div class="card-type">高効率設備への更新・電化・脱炭素化</div>
+</div>
+<div class="badge-row">
+<div class="badge badge-open">申請受付中</div>
+<div class="type-label-subsidy">補助金</div>
+</div>
+</div>
+<div class="card-desc">工場・事業場の高効率設備への更新や省エネ対策に使える補助金です。中小企業から大企業まで対象で、エネルギーコスト削減と脱炭素化を同時に進められます。</div>
+<div class="card-amount">
+<div class="amount-label">補助額目安</div>
+<div class="amount-value">30万円〜数億円</div>
+<div class="amount-rate">補助率<br/>1/3〜1/2</div><div class="amount-adoption">直近採択率<br/>70.1%</div>
+</div>
+<div class="card-tags">
+<span class="tag tag-green">大企業も申請可</span>
+<span class="tag tag-blue">工場・事業場型</span>
+<span class="tag tag-blue">設備単位型（省エネ率10%以上）</span>
+</div>
+<div class="card-deadline">
+<span class="deadline-icon">⏳</span>
+<span class="deadline-label">直近公募締切：</span>
+<span class="deadline-text">2次　6月上旬開始予定</span>
+</div>
+<div class="card-toggle" onclick="toggleDetail(this)">
+<span>詳しく見る</span><span class="toggle-arrow">▼</span>
+</div>
+<div class="card-detail">
+<div class="detail-section"><div class="detail-title">✅ 主な申請条件</div><div class="detail-row"><span class="detail-dot">•</span><span>対象：大企業・中小企業・小規模・個人事業主・開業医（医療法人含む）・一般社団法人・NPOなど</span></div><div class="detail-row"><span class="detail-dot">•</span><span>工場・事業場型：工場全体の大規模な省エネ最適化</span></div><div class="detail-row"><span class="detail-dot">•</span><span>設備単位型：指定設備ごとの更新（SII登録設備のみ・省エネ率10%以上等）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>⚠️ 設備単位型はメーカーへの事前確認がほぼ必須</span></div></div><div class="detail-section"><div class="detail-title">📦 補助対象経費</div><div class="detail-row"><span class="detail-dot">•</span><span>設計費・設備費・工事費</span></div><div class="detail-row"><span class="detail-dot">•</span><span>高効率設備への更新（空調・照明・製造ライン等）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>電化・脱炭素燃料への転換設備</span></div><div class="detail-row"><span class="detail-dot">•</span><span>AI・IoT・EMS（エネルギーマネジメントシステム）導入</span></div><div class="detail-row"><span class="detail-dot">•</span><span>❌ 原則として既存設備の更新（入替）が前提</span></div></div><div class="detail-section"><div class="detail-title">💰 補助額</div><div class="detail-row"><span class="detail-dot">•</span><span>工場・事業場型：100万〜数億円（補助率 中小1/2・大企業1/3）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>設備単位型：30万〜数千万円（補助率1/3以内）</span></div></div><div class="detail-section"><div class="detail-title">🗓 スケジュール（2次）</div><div class="schedule-list"><div class="schedule-item">設備検討　　省エネ計算・SII登録確認</div><div class="schedule-item highlight">6月上旬　　公募開始予定（2次）</div><div class="schedule-item">秋頃　　　　応募締切</div><div class="schedule-item">冬頃　　　　採択結果発表</div><div class="schedule-item">翌年春　　　交付申請・交付決定</div><div class="schedule-item">翌年〜　　　設備発注・納品・工事</div><div class="schedule-item">期限内　　　実績報告・補助金入金</div></div></div><div class="detail-section">
+<a class="official-link" href="https://syouenehojyokin.sii.or.jp/" target="_blank">🌐 公式サイトを開く</a>
+</div></div>
+</div>
+<!-- ⑪ 省エネルギー設備投資利子補給金 -->
+<!-- ⑫ エイジフレンドリー補助金 -->
+<div class="card type-subsidy" data-cat="shokuba" data-status="open">
+<div class="card-header">
+<div class="card-emoji">👴</div>
+<div class="card-title-wrap">
+<div class="card-name">エイジフレンドリー補助金</div>
+<div class="card-type">高齢者の安全・健康な職場環境づくり</div>
+</div>
+<div class="badge-row">
+<div class="badge badge-open">申請受付中</div>
+<div class="type-label-subsidy">補助金</div>
+</div>
+</div>
+<div class="card-desc">60歳以上の従業員がいる職場の安全・健康環境づくりに使える補助金です。転倒防止・腰痛対策・熱中症防止の設備導入費などが対象で、採択率はほぼ100%です。</div>
+<div class="card-amount">
+<div class="amount-label">補助額目安</div>
+<div class="amount-value">50万円〜250万円</div>
+<div class="amount-rate">補助率<br/>1/2〜2/3</div><div class="amount-adoption" style="color:#00884a; font-weight:700;">直近採択率<br/>ほぼ100%</div>
+</div>
+<div class="card-tags"><span class="tag tag-blue">助成金</span>
+<span class="tag tag-orange">60歳以上の従業員がいることが必須</span>
+<span class="tag tag-green">小額投資でも申請可</span>
+<span class="tag tag-blue">医療法人・社会福祉法人も可</span>
+</div>
+<div class="card-deadline">
+<span class="deadline-icon">📅</span>
+<span class="deadline-label">直近公募締切：</span>
+<span class="deadline-text">5月15日〜随時受付（予算消化次第締切）</span>
+</div>
+<div class="card-toggle" onclick="toggleDetail(this)">
+<span>詳しく見る</span><span class="toggle-arrow">▼</span>
+</div>
+<div class="card-detail">
+<div class="detail-section"><div class="detail-title">✅ 主な申請条件</div><div class="detail-row"><span class="detail-dot">•</span><span>対象：中小企業・小規模事業者、開業医、介護事業者、社会福祉法人・医療法人等（大企業は原則対象外）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>60歳以上の労働者が就業していること（必須）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>「高齢者の安全・健康維持・作業改善に資する用途」であること</span></div><div class="detail-row"><span class="detail-dot">•</span><span>❌ 汎用の事務機器・PC・単なる事務備品は対象外</span></div></div><div class="detail-section"><div class="detail-title">📦 補助対象経費</div><div class="detail-row"><span class="detail-dot">•</span><span>設備機器費（手すり・床材・リフト・健康測定機器・空調・パワースーツ等）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>工事費</span></div><div class="detail-row"><span class="detail-dot">•</span><span>コンサルティング費用・研修費</span></div></div><div class="detail-section"><div class="detail-title">💰 補助額</div><div class="detail-row"><span class="detail-dot">•</span><span>補助上限額：100万円（複数店舗等の場合200万円）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>補助下限額：設定なし（小額投資でも申請可）</span></div></div><div class="detail-section"><div class="detail-title">🗓 スケジュール（随時）</div><div class="schedule-list"><div class="schedule-item highlight">5月15日〜　随時受付（予算消化次第締切）</div><div class="schedule-item">申請後　　　審査・採択（条件を満たせばほぼ100%）</div><div class="schedule-item">交付決定後　設備発注・納品</div><div class="schedule-item">期限内　　　実績報告・補助金入金</div></div></div><div class="detail-section">
+<a class="official-link" href="https://www.jashcon-age.or.jp/" target="_blank">🌐 公式サイトを開く</a>
+</div></div>
+</div>
+<!-- ─── 助成金ラベル ─── -->
+<div class="section-divider" id="divider-grant">
+<div class="section-divider-line"></div>
+<div class="section-divider-label sdl-grant">助成金 6件</div>
+<div class="section-divider-line"></div>
+</div>
+<!-- ⑬ キャリアアップ助成金 -->
+<div class="card type-grant" data-cat="saiyo" data-status="open">
+<div class="card-header">
+<div class="card-emoji">📋</div>
+<div class="card-title-wrap">
+<div class="card-name">キャリアアップ助成金</div>
+<div class="card-type">非正規社員の正社員化・待遇改善</div>
+</div>
+<div class="badge-row">
+<div class="badge badge-open">申請受付中</div>
+<div class="type-label-grant">助成金</div>
+</div>
+</div>
+<div class="card-desc">パートやアルバイトの正社員転換、または待遇改善を検討している会社向けの助成金です。非正規雇用が多い職場で、人材の定着や処遇改善を進めたいときに活用しやすい制度です。</div>
+<div class="card-amount">
+<div class="amount-label">主な助成額</div>
+<div class="amount-value">最大80万円/人</div>
+<div class="amount-rate">直近採択率<br/>ほぼ100%</div>
+</div>
+<div class="card-tags">
+<span class="tag tag-orange">社労士契約必須</span><span class="tag tag-blue">労基法順守</span><span class="tag tag-blue">給与計算・勤怠管理</span><span class="tag tag-green">有期→正社員</span></div>
+<div class="card-deadline">
+<span class="deadline-icon">📅</span>
+<span class="deadline-label">直近公募締切：</span>
+<span class="deadline-text">随時（期限なく継続中）</span>
+</div>
+<div class="card-toggle" onclick="toggleDetail(this)">
+<span>詳しく見る</span><span class="toggle-arrow">▼</span>
+</div>
+<div class="card-detail">
+<div class="detail-section"><div class="detail-title">✅ こんな会社・場面に向いています</div><div class="detail-row"><span class="detail-dot">•</span><span>パート・アルバイト・契約社員を雇っている会社が対象</span></div><div class="detail-row"><span class="detail-dot">•</span><span>転換や処遇改善を行う前に、社労士と連携してキャリアアップ計画を提出することが必要</span></div><div class="detail-row"><span class="detail-dot">•</span><span>❌ 計画提出前に転換済みの場合は受給できない</span></div></div><div class="detail-section"><div class="detail-title">📋 支給対象の取り組み</div><div class="detail-row"><span class="detail-dot">•</span><span>正社員化コース：有期・派遣社員を正社員に転換する</span></div><div class="detail-row"><span class="detail-dot">•</span><span>賃金規定等改定コース：非正規社員の基本給を3%以上引き上げる</span></div><div class="detail-row"><span class="detail-dot">•</span><span>賞与・退職金制度導入コース：制度を新設して対象者に支給する</span></div></div><div class="detail-section"><div class="detail-title">💰 支給額（目安）</div><div class="detail-row"><span class="detail-dot">•</span><span>正社員化コース：1人あたり40万円（重点支援対象者は80万円）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>賃金規定等改定コース：1人あたり最大5万円</span></div><div class="detail-row"><span class="detail-dot">•</span><span>賞与・退職金制度導入コース：1事業所最大38万円</span></div></div><div class="detail-section"><div class="detail-title">🗓 スケジュール（随時）</div><div class="schedule-list"><div class="schedule-item">まず　　　　社労士に相談・キャリアアップ計画を作成・提出</div><div class="schedule-item highlight">計画認定後　正社員転換・処遇改善を実施</div><div class="schedule-item">転換後6か月　規定の給与を支払い</div><div class="schedule-item">6か月経過後　支給申請（2か月以内）</div></div></div><div class="detail-section"><a class="official-link" href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/part_haken/jigyounushi/career.html" target="_blank">🌐 公式サイトを開く（厚生労働省）</a></div></div>
+</div>
+<!-- ⑭ 業務改善助成金 -->
+<div class="card type-grant" data-cat="equipment it shokuba" data-status="open">
+<div class="card-header">
+<div class="card-emoji">💼</div>
+<div class="card-title-wrap">
+<div class="card-name">業務改善助成金</div>
+<div class="card-type">最低賃金引上げ＋設備投資への助成</div>
+</div>
+<div class="badge-row">
+<div class="badge badge-open">申請受付中</div>
+<div class="type-label-grant">助成金</div>
+</div>
+</div>
+<div class="card-desc">賃上げを検討している中小企業が、あわせて設備投資やシステム導入も行う場合に活用できる助成金です。「賃金を上げながら生産性も改善したい」という会社に向いています。</div>
+<div class="card-amount">
+<div class="amount-label">目安助成額</div>
+<div class="amount-value">30〜600万円</div>
+<div class="amount-rate">直近採択率<br/>ほぼ100%</div>
+</div>
+<div class="card-tags">
+<span class="tag tag-red">最低賃金50円以上引上げが必須（事前）</span>
+<span class="tag tag-blue">同一事業場で年1回限り</span>
+<span class="tag tag-blue">労基法順守</span><span class="tag tag-blue">給与計算・勤怠管理</span></div>
+<div class="card-deadline">
+<span class="deadline-icon">⏳</span>
+<span class="deadline-label">直近公募締切：</span>
+<span class="deadline-text">令和8年9月1日〜（集中公募）</span>
+</div>
+<div class="card-toggle" onclick="toggleDetail(this)">
+<span>詳しく見る（スケジュール）</span><span class="toggle-arrow">▼</span>
+</div>
+<div class="card-detail">
+<div class="detail-section"><div class="detail-title">✅ こんな会社・場面に向いています</div><div class="detail-row"><span class="detail-dot">•</span><span>中小企業・小規模事業者が対象（大企業は不可）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>賃金を50〜90円以上引き上げると同時に、設備投資を行う会社</span></div><div class="detail-row"><span class="detail-dot">•</span><span>❌ 令和8年は集中受付制（9月1日開始予定）。先に申請してから設備を発注すること</span></div></div><div class="detail-section"><div class="detail-title">📦 補助対象経費</div><div class="detail-row"><span class="detail-dot">•</span><span>機械設備・器具・工具の購入費</span></div><div class="detail-row"><span class="detail-dot">•</span><span>ITツール・ソフトウェアの導入費</span></div><div class="detail-row"><span class="detail-dot">•</span><span>店舗・事業場の改修工事費</span></div><div class="detail-row"><span class="detail-dot">•</span><span>コンサルティング費用</span></div></div><div class="detail-section"><div class="detail-title">💰 支給額（目安）</div><div class="detail-row"><span class="detail-dot">•</span><span>50円コース：30〜130万円</span></div><div class="detail-row"><span class="detail-dot">•</span><span>70円コース：40〜300万円</span></div><div class="detail-row"><span class="detail-dot">•</span><span>90円コース：90〜600万円</span></div><div class="detail-row"><span class="detail-dot">•</span><span>※引き上げる人数や金額によって上限が変わります</span></div></div><div class="detail-section"><div class="detail-title">🗓 スケジュール（令和8年）</div><div class="schedule-list"><div class="schedule-item">今から　　　賃上げ計画の検討・設備投資の見積り取得</div><div class="schedule-item highlight">9月1日　　　申請受付開始（集中受付制）</div><div class="schedule-item">申請後　　　審査・交付決定</div><div class="schedule-item">交付決定後　設備発注・納品・支払い→実績報告→入金</div></div></div><div class="detail-section"><a class="official-link" href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/zigyonushi/shienjigyou/03.html" target="_blank">🌐 公式サイトを開く（厚生労働省）</a></div></div>
+</div>
+<!-- ⑮ 働き方改革推進支援助成金 -->
+<div class="card type-grant" data-cat="equipment it hataraki shokuba" data-status="open">
+<div class="card-header">
+<div class="card-emoji">⏰</div>
+<div class="card-title-wrap">
+<div class="card-name">働き方改革推進支援助成金</div>
+<div class="card-type">残業削減・有休取得・労働時間管理</div>
+</div>
+<div class="badge-row">
+<div class="badge badge-open">申請受付中</div>
+<div class="type-label-grant">助成金</div>
+</div>
+</div>
+<div class="card-desc">残業が多い・有休が取りにくいといった職場環境を改善したい中小企業向けの助成金です。勤怠管理システムの導入や就業規則の整備にかかる費用も対象になります。</div>
+<div class="card-amount">
+<div class="amount-label">助成額</div>
+<div class="amount-value">120万円〜1,000万円</div>
+<div class="amount-rate">助成率<br/>3/4〜4/5</div><div class="amount-adoption">直近採択率<br/>ほぼ100%</div>
+</div>
+<div class="card-tags"><span class="tag tag-orange">36協定提出必須</span>
+<span class="tag tag-blue">労基法順守</span><span class="tag tag-blue">給与計算・勤怠管理</span></div>
+<div class="card-deadline">
+<span class="deadline-icon">📅</span>
+<span class="deadline-label">直近公募締切：</span>
+<span class="deadline-text">令和8年11月30日</span>
+</div>
+<div class="card-toggle" onclick="toggleDetail(this)">
+<span>詳しく見る</span><span class="toggle-arrow">▼</span>
+</div>
+<div class="card-detail">
+<div class="detail-section"><div class="detail-title">✅ こんな会社・場面に向いています</div><div class="detail-row"><span class="detail-dot">•</span><span>中小企業・小規模事業者が対象（大企業は原則不可）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>36協定を届出していて、残業削減や有休促進に取り組む意欲のある会社</span></div><div class="detail-row"><span class="detail-dot">•</span><span>❌ 予算消化次第、11月30日より前に受付終了の場合あり</span></div></div><div class="detail-section"><div class="detail-title">📦 補助対象経費</div><div class="detail-row"><span class="detail-dot">•</span><span>勤怠管理ソフト・タイムレコーダーなどの導入費</span></div><div class="detail-row"><span class="detail-dot">•</span><span>生産性を上げるための設備・機器の購入費</span></div><div class="detail-row"><span class="detail-dot">•</span><span>社労士などの専門家によるコンサルティング費用</span></div><div class="detail-row"><span class="detail-dot">•</span><span>就業規則の整備費用・研修費用</span></div></div><div class="detail-section"><div class="detail-title">💰 支給額（目安）</div><div class="detail-row"><span class="detail-dot">•</span><span>残業時間の削減目標を達成した場合：25〜150万円</span></div><div class="detail-row"><span class="detail-dot">•</span><span>年次有給休暇の計画的付与制度を新規導入した場合：25万円</span></div><div class="detail-row"><span class="detail-dot">•</span><span>時間単位の年休制度などを新規導入した場合：25万円</span></div><div class="detail-row"><span class="detail-dot">•</span><span>※賃上げを実施した場合は最大360万円の加算あり</span></div></div><div class="detail-section"><div class="detail-title">🗓 スケジュール（令和8年）</div><div class="schedule-list"><div class="schedule-item">今から　　　36協定の確認・取り組み計画の作成</div><div class="schedule-item highlight">随時受付　　申請（令和8年11月30日まで）</div><div class="schedule-item">申請後　　　審査・交付決定</div><div class="schedule-item">交付決定後　設備発注・実施→令和9年2月5日までに支給申請</div></div></div><div class="detail-section"><a class="official-link" href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000120692.html" target="_blank">🌐 公式サイトを開く（厚生労働省）</a></div></div>
+</div>
+<!-- ⑯ 両立支援等助成金 -->
+<div class="card type-grant" data-cat="hataraki" data-status="open">
+<div class="card-header">
+<div class="card-emoji">👶</div>
+<div class="card-title-wrap">
+<div class="card-name">両立支援等助成金</div>
+<div class="card-type">育児・介護と仕事の両立支援</div>
+</div>
+<div class="badge-row">
+<div class="badge badge-open">申請受付中</div>
+<div class="type-label-grant">助成金</div>
+</div>
+</div>
+<div class="card-desc">育休や介護休暇を取りやすい職場環境を整えている会社向けの助成金です。制度を作るだけでなく社員が実際に利用した際に受給でき、子育て・介護と仕事の両立支援に積極的な会社に向いています。</div>
+<div class="card-amount">
+<div class="amount-label">助成額</div>
+<div class="amount-value">28万円〜144万円</div>
+<div class="amount-rate">直近採択率<br/>ほぼ100%</div>
+</div>
+<div class="card-tags"><span class="tag tag-green">育休取得予定者在籍</span><span class="tag tag-green">介護休取得予定者在籍</span>
+<span class="tag tag-blue">労基法順守</span><span class="tag tag-blue">給与計算・勤怠管理</span></div>
+<div class="card-deadline">
+<span class="deadline-icon">📅</span>
+<span class="deadline-label">直近公募締切：</span>
+<span class="deadline-text">随時（期限なく継続中）</span>
+</div>
+<div class="card-toggle" onclick="toggleDetail(this)">
+<span>詳しく見る</span><span class="toggle-arrow">▼</span>
+</div>
+<div class="card-detail">
+<div class="detail-section"><div class="detail-title">✅ こんな会社・場面に向いています</div><div class="detail-row"><span class="detail-dot">•</span><span>育休・介護休業などの制度を就業規則に整備している会社</span></div><div class="detail-row"><span class="detail-dot">•</span><span>対象社員が実際に育休・介護休業を取得すること（制度を作るだけでは受給できない）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>育休開始前に面談と支援プランの作成が必要（事後では対象外）</span></div></div><div class="detail-section"><div class="detail-title">📋 支給対象の取り組み</div><div class="detail-row"><span class="detail-dot">•</span><span>育休の取得・職場復帰を計画的に支援する（育児休業等支援コース）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>男性が産後8週以内に育休を取得する（出生時両立支援コース）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>育休取得者の仕事を代替する社員に手当を支給する（業務代替支援コース）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>介護休業の取得・職場復帰、介護休暇の有給化（介護離職防止支援コース）</span></div></div><div class="detail-section"><div class="detail-title">💰 支給額（目安）</div><div class="detail-row"><span class="detail-dot">•</span><span>育児休業等支援コース：育休取得時30万円＋職場復帰時30万円</span></div><div class="detail-row"><span class="detail-dot">•</span><span>出生時両立支援コース：1人目20万円（取得率UP達成で別途60万円）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>業務代替支援コース：代替手当の3/4（最大240万円）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>介護離職防止支援コース：介護休業取得40万円など</span></div></div><div class="detail-section"><div class="detail-title">🗓 スケジュール（随時）</div><div class="schedule-list"><div class="schedule-item">まず　　　　就業規則への制度整備</div><div class="schedule-item">育休前　　　対象者と面談・支援プランを作成（必須）</div><div class="schedule-item highlight">育休取得　　対象者が育休・介護休業を取得</div><div class="schedule-item">職場復帰後　支給申請</div></div></div><div class="detail-section"><a class="official-link" href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kodomo/shokuba_kosodate/ryouritsu01/index.html" target="_blank">🌐 公式サイトを開く（厚生労働省）</a></div></div>
+</div>
+<!-- ⑰ 65歳超雇用推進助成金 -->
+<div class="card type-grant" data-cat="saiyo hataraki" data-status="open">
+<div class="card-header">
+<div class="card-emoji">🧓</div>
+<div class="card-title-wrap">
+<div class="card-name">65歳超雇用推進助成金</div>
+<div class="card-type">高年齢者の雇用促進・定年延長</div>
+</div>
+<div class="badge-row">
+<div class="badge badge-open">申請受付中</div>
+<div class="type-label-grant">助成金</div>
+</div>
+</div>
+<div class="card-desc">定年延長・廃止や高齢者の就業継続を制度として整備した中小企業向けの助成金です。シニア人材を長く活躍させたい、または人手不足対策として雇用制度を見直したい会社に向いています。</div>
+<div class="card-amount">
+<div class="amount-label">助成額</div>
+<div class="amount-value">30万円〜160万円</div>
+<div class="amount-rate">直近採択率<br/>ほぼ100%</div>
+</div>
+<div class="card-tags"><span class="tag tag-green">50歳以上の職員在籍</span>
+<span class="tag tag-blue">労基法順守</span><span class="tag tag-blue">給与計算・勤怠管理</span></div>
+<div class="card-deadline">
+<span class="deadline-icon">📅</span>
+<span class="deadline-label">直近公募締切：</span>
+<span class="deadline-text">随時（期限なく継続中）</span>
+</div>
+<div class="card-toggle" onclick="toggleDetail(this)">
+<span>詳しく見る</span><span class="toggle-arrow">▼</span>
+</div>
+<div class="card-detail">
+<div class="detail-section"><div class="detail-title">✅ こんな会社・場面に向いています</div><div class="detail-row"><span class="detail-dot">•</span><span>定年の引き上げ・廃止や、高齢者が長く働ける制度を整備したい会社</span></div><div class="detail-row"><span class="detail-dot">•</span><span>高年齢者雇用推進者を選任し、雇用管理の取り組みを1つ以上実施していること</span></div><div class="detail-row"><span class="detail-dot">•</span><span>❌ 現在の定年・継続雇用年齢が70歳未満の会社のみ対象</span></div></div><div class="detail-section"><div class="detail-title">📋 支給対象の取り組み</div><div class="detail-row"><span class="detail-dot">•</span><span>Ⅰ 65歳以上への定年引き上げ・廃止、または66歳以上の継続雇用制度の導入</span></div><div class="detail-row"><span class="detail-dot">•</span><span>Ⅱ 高年齢者向けの評価制度・短時間勤務・在宅勤務・研修制度などの整備</span></div><div class="detail-row"><span class="detail-dot">•</span><span>Ⅲ 50歳以上・定年未満の有期契約社員を無期雇用（正社員等）に転換</span></div></div><div class="detail-section"><div class="detail-title">💰 支給額（目安）</div><div class="detail-row"><span class="detail-dot">•</span><span>Ⅰ：15〜160万円（定年引き上げ幅・在籍人数による）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>Ⅱ：対象経費の60%（中小企業）/ 45%（大企業）※初回30万円相当</span></div><div class="detail-row"><span class="detail-dot">•</span><span>Ⅲ：1人あたり30万円（中小企業）/ 23万円（大企業）・年10人まで</span></div></div><div class="detail-section"><div class="detail-title">🗓 スケジュール（随時）</div><div class="schedule-list"><div class="schedule-item">まず　　　　取り組み内容の検討・就業規則の整備</div><div class="schedule-item">Ⅱ・Ⅲ　　　計画書を開始3か月前までに機構へ提出・認定</div><div class="schedule-item highlight">措置実施　　定年引き上げ・雇用管理整備・無期転換を実施</div><div class="schedule-item">Ⅰ　　　　　実施月の翌月から4か月以内に支給申請</div><div class="schedule-item">Ⅱ・Ⅲ　　　計画終了・転換後6か月の賃金支給後に支給申請</div></div></div><div class="detail-section"><a class="official-link" href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000139692.html" target="_blank">🌐 公式サイトを開く（厚生労働省）</a></div></div>
+</div>
+<!-- ⑱ 人材開発支援助成金 -->
+<div class="card type-grant" data-cat="kenshu" data-status="open">
+<div class="card-header">
+<div class="card-emoji">🎓</div>
+<div class="card-title-wrap">
+<div class="card-name">人材開発支援助成金</div>
+<div class="card-type">職業訓練・研修費用・リスキリング支援</div>
+</div>
+<div class="badge-row">
+<div class="badge badge-open">申請受付中</div>
+<div class="type-label-grant">助成金</div>
+</div>
+</div>
+<div class="card-desc">従業員のスキルアップや資格取得、DX人材育成に取り組む会社向けの助成金です。社外研修・社内訓練どちらも対象で、研修計画を立てれば随時申請できます。</div>
+<div class="card-amount">
+<div class="amount-label">目安助成額</div>
+<div class="amount-value">訓練費の45〜75%</div>
+<div class="amount-rate">直近採択率<br/>ほぼ100%</div>
+</div>
+<div class="card-tags"><span class="tag tag-green">OFF-JT（座学型）訓練</span><span class="tag tag-green">OJT（現場実務指導）</span>
+<span class="tag tag-blue">労基法順守</span><span class="tag tag-blue">給与計算・勤怠管理</span></div>
+<div class="card-deadline">
+<span class="deadline-icon">📅</span>
+<span class="deadline-label">直近公募締切：</span>
+<span class="deadline-text">随時（期限なく継続中）</span>
+</div>
+<div class="card-toggle" onclick="toggleDetail(this)">
+<span>詳しく見る</span><span class="toggle-arrow">▼</span>
+</div>
+<div class="card-detail">
+<div class="detail-section"><div class="detail-title">✅ こんな会社・場面に向いています</div><div class="detail-row"><span class="detail-dot">•</span><span>従業員に職務に関連する研修を受けさせたい会社（業種・規模問わず）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>研修を始める前に、訓練計画を労働局へ届け出ること（事前届出が必須）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>❌ 届出前に研修を開始した場合は対象外</span></div></div><div class="detail-section"><div class="detail-title">📋 支給対象の取り組み</div><div class="detail-row"><span class="detail-dot">•</span><span>人材育成支援コース：社内外の研修（OFF-JT）や45歳以上向けの実習型訓練（OJT+OFF-JT）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>事業展開等リスキリング支援コース：DX・GX・新事業展開に必要なスキル習得訓練</span></div><div class="detail-row"><span class="detail-dot">•</span><span>人への投資促進コース：長期教育訓練休暇制度の導入と社員への付与</span></div></div><div class="detail-section"><div class="detail-title">💰 支給額（目安）</div><div class="detail-row"><span class="detail-dot">•</span><span>研修費用の助成：中小企業60%・大企業45%（賃上げ達成で+15%）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>研修中の賃金助成：中小企業800円・大企業400円（1人1時間あたり）</span></div><div class="detail-row"><span class="detail-dot">•</span><span>OJT実施助成：中小企業10万円・大企業9万円（1人1コースあたり）</span></div></div><div class="detail-section"><div class="detail-title">🗓 スケジュール（随時）</div><div class="schedule-list"><div class="schedule-item">まず　　　　訓練計画の作成・労働局へ届出（訓練開始1か月前まで）</div><div class="schedule-item highlight">届出後　　　研修・訓練を実施（OFF-JT・OJT）</div><div class="schedule-item">訓練終了後　2か月以内に支給申請</div><div class="schedule-item">申請後　　　審査・支給決定・助成金入金</div></div></div><div class="detail-section"><a class="official-link" href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/koyou/kyufukin/d01-1.html" target="_blank">🌐 公式サイトを開く（厚生労働省）</a></div></div>
+</div>
+<div style="height:60px;"></div>
+</div>
+<button class="fab" onclick="scrollToTop()">⬆ トップへ戻る</button>
+<script>
+let currentStatus = 'all';
+let currentCat    = 'all';
+
+function filterStatus(status, el) {
+  currentStatus = status;
+  document.querySelectorAll('.status-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  applyFilters();
+}
+
+function filterCategory(cat, el) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-tile').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  applyFilters();
+}
+
+function applyFilters() {
+  const cards = document.querySelectorAll('.card[data-status]');
+  let visible = 0;
+  cards.forEach(card => {
+    const st   = card.getAttribute('data-status');
+    const cats = (card.getAttribute('data-cat') || '').split(' ');
+    const statusOk = currentStatus === 'all' || st === currentStatus;
+    const catOk    = currentCat === 'all' || cats.includes(currentCat);
+    if (statusOk && catOk) {
+      card.removeAttribute('data-hidden');
+      visible++;
+    } else {
+      card.setAttribute('data-hidden', 'true');
+    }
+  });
+  document.getElementById('visibleCount').textContent = visible;
+
+  // セクションラベルの表示/非表示
+  const subsidyVisible = [...document.querySelectorAll('.card.type-subsidy:not([data-hidden="true"])')].length;
+  const grantVisible   = [...document.querySelectorAll('.card.type-grant:not([data-hidden="true"])')].length;
+  document.getElementById('divider-subsidy').style.display = subsidyVisible > 0 ? '' : 'none';
+  document.getElementById('divider-grant').style.display   = grantVisible   > 0 ? '' : 'none';
+}
+
+function toggleDetail(el) {
+  const detail = el.nextElementSibling;
+  const arrow  = el.querySelector('.toggle-arrow');
+  const isOpen = detail.classList.toggle('open');
+  arrow.textContent = isOpen ? '▲' : '▼';
+  el.querySelector('span:first-child').textContent = isOpen ? '閉じる' : '詳しく見る（申請条件・スケジュール）';
+}
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
