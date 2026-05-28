@@ -1,0 +1,721 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>建設業｜補助金で買えるもの図鑑</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", sans-serif;
+    background: #f0f0f0;
+    color: #222;
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: linear-gradient(135deg, #06C755 0%, #00A546 100%);
+    color: white;
+    padding: 14px 16px 14px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .header-icon {
+    width: 38px; height: 38px;
+    background: rgba(255,255,255,0.22);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+  .header h1 { font-size: 16px; font-weight: 700; line-height: 1.3; }
+  .header-sub { font-size: 11px; opacity: 0.9; margin-top: 2px; }
+
+  /* ─── INDUSTRY SWITCHER ─── */
+  .ind-bar {
+    background: white;
+    padding: 10px 12px 8px;
+    border-bottom: 1px solid #e8e8e8;
+    overflow-x: auto;
+    scrollbar-width: none;
+    display: flex; gap: 8px;
+  }
+  .ind-bar::-webkit-scrollbar { display: none; }
+  .ind-chip {
+    flex-shrink: 0;
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 7px 13px;
+    border-radius: 18px;
+    border: 1.5px solid #e0e0e0;
+    background: #fafafa;
+    font-size: 12.5px;
+    font-weight: 600; color: #555;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .ind-chip.active {
+    background: #06C755; color: white; border-color: #06C755;
+    box-shadow: 0 2px 6px rgba(6,199,85,0.35);
+  }
+  .ind-chip.coming { color: #aaa; background: #f7f7f7; cursor: default; }
+  .ind-chip.coming::after { content: " 準備中"; font-size: 10px; opacity: 0.7; }
+
+  /* ─── SUMMARY BANNER ─── */
+  .summary {
+    background: white;
+    margin: 12px 12px 0;
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .summary-lead {
+    font-size: 13px; line-height: 1.65; color: #333;
+    margin-bottom: 12px;
+  }
+  .summary-lead strong { color: #c0392b; font-weight: 700; }
+  .summary-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .sm-tile {
+    background: #f7faf8;
+    border: 1px solid #d5edd8;
+    border-radius: 10px;
+    padding: 9px 11px;
+  }
+  .sm-tile-label { font-size: 10.5px; color: #666; margin-bottom: 3px; }
+  .sm-tile-value { font-size: 14px; font-weight: 800; color: #00884a; line-height: 1.25; }
+
+  .summary-subsidies-label {
+    font-size: 11px; font-weight: 700; color: #666;
+    margin-bottom: 6px;
+  }
+  .summary-subsidies {
+    display: flex; flex-wrap: wrap; gap: 5px;
+  }
+  .sub-chip {
+    font-size: 11px; padding: 3px 8px; border-radius: 12px;
+    font-weight: 700; cursor: pointer;
+    transition: all 0.15s; user-select: none;
+  }
+  .sub-chip[data-sub="shoryokuka"]   { background: #fff3e8; color: #b85a00; border: 1.5px solid #ffd9b3; }
+  .sub-chip[data-sub="monozukuri"]   { background: #fff0f0; color: #c0392b; border: 1.5px solid #ffc4c4; }
+  .sub-chip[data-sub="jizokuka"]     { background: #f0faf4; color: #00884a; border: 1.5px solid #b2e8cb; }
+  .sub-chip[data-sub="it"]           { background: #eef3ff; color: #2253c7; border: 1.5px solid #c8d6ff; }
+  .sub-chip[data-sub="gyomukaizen"]  { background: #f3e8ff; color: #6d28d9; border: 1.5px solid #ddc6ff; }
+  .sub-chip[data-sub="shineigi"]     { background: #fefce8; color: #a16207; border: 1.5px solid #fde68a; }
+
+  /* ─── FILTER BAR (sticky) ─── */
+  .filter-bar {
+    background: white;
+    padding: 10px 12px;
+    margin: 12px 0 0;
+    border-top: 1px solid #e8e8e8;
+    border-bottom: 1px solid #e8e8e8;
+    position: sticky;
+    top: 64px;
+    z-index: 90;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+  }
+  .filter-label {
+    font-size: 11px; font-weight: 700; color: #666;
+    margin-bottom: 7px;
+  }
+  .filter-chips {
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .filter-chip {
+    font-size: 12px; padding: 5px 11px;
+    border-radius: 14px; border: 1.5px solid #ddd;
+    background: white; color: #555;
+    font-weight: 600; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filter-chip.active {
+    background: #06C755; color: white; border-color: #06C755;
+  }
+  .filter-chip[data-f="shoryokuka"].active   { background: #f97316; border-color: #f97316; }
+  .filter-chip[data-f="monozukuri"].active   { background: #dc2626; border-color: #dc2626; }
+  .filter-chip[data-f="jizokuka"].active     { background: #06C755; border-color: #06C755; }
+  .filter-chip[data-f="it"].active           { background: #2563eb; border-color: #2563eb; }
+  .filter-chip[data-f="gyomukaizen"].active  { background: #7c3aed; border-color: #7c3aed; }
+  .filter-chip[data-f="shineigi"].active     { background: #b45309; border-color: #b45309; }
+
+  .visible-count {
+    margin: 8px 12px 0; font-size: 11.5px; color: #777;
+  }
+  .visible-count span { color: #06C755; font-weight: 700; }
+
+  /* ─── CATEGORY SECTION ─── */
+  .cat-section { margin-top: 16px; }
+  .cat-section[data-empty="true"] { display: none; }
+  .cat-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    background: white;
+    margin: 0 12px;
+    border-radius: 12px 12px 0 0;
+    border-bottom: 2px solid #06C755;
+  }
+  .cat-emoji {
+    font-size: 22px; flex-shrink: 0;
+    width: 36px; height: 36px;
+    background: #f0faf4;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cat-title { font-size: 14px; font-weight: 800; color: #222; line-height: 1.3; }
+  .cat-sub   { font-size: 10.5px; color: #888; margin-top: 1px; }
+
+  .item-grid {
+    background: white;
+    margin: 0 12px;
+    border-radius: 0 0 14px 14px;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  /* ─── ITEM CARD ─── */
+  .item {
+    background: #fafafa;
+    border: 1.5px solid #eee;
+    border-radius: 11px;
+    padding: 10px 9px 9px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex; flex-direction: column;
+    min-height: 138px;
+    position: relative;
+  }
+  .item:hover { border-color: #06C755; background: white; }
+  .item[data-hidden="true"] { display: none; }
+  .item-visual {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 6px;
+    line-height: 1;
+    height: 38px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .item-name {
+    font-size: 12px; font-weight: 700; color: #222;
+    line-height: 1.3; margin-bottom: 4px;
+    min-height: 32px;
+  }
+  .item-desc {
+    font-size: 10.5px; color: #666;
+    line-height: 1.4;
+    flex: 1;
+    margin-bottom: 6px;
+  }
+  .item-subs {
+    display: flex; flex-wrap: wrap; gap: 3px;
+    margin-bottom: 4px;
+  }
+  .item-sub-chip {
+    font-size: 9.5px; padding: 1.5px 6px;
+    border-radius: 8px;
+    font-weight: 700;
+  }
+  .item-sub-chip[data-sub="shoryokuka"]   { background: #fff3e8; color: #b85a00; }
+  .item-sub-chip[data-sub="monozukuri"]   { background: #fff0f0; color: #c0392b; }
+  .item-sub-chip[data-sub="jizokuka"]     { background: #f0faf4; color: #00884a; }
+  .item-sub-chip[data-sub="it"]           { background: #eef3ff; color: #2253c7; }
+  .item-sub-chip[data-sub="gyomukaizen"]  { background: #f3e8ff; color: #6d28d9; }
+  .item-sub-chip[data-sub="shineigi"]     { background: #fefce8; color: #a16207; }
+  .item-price {
+    font-size: 10.5px; color: #00884a; font-weight: 800;
+    text-align: right;
+  }
+  .item-popular {
+    position: absolute; top: 6px; right: 6px;
+    font-size: 9px; font-weight: 800;
+    background: linear-gradient(135deg, #f59e0b, #fcd34d);
+    color: #78350f;
+    padding: 2px 6px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(245,158,11,0.4);
+  }
+
+  /* ─── MODAL ─── */
+  .modal-back {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: none; align-items: flex-end;
+    z-index: 300;
+  }
+  .modal-back.open { display: flex; }
+  .modal {
+    background: white;
+    width: 100%; max-width: 480px;
+    margin: 0 auto;
+    border-radius: 18px 18px 0 0;
+    padding: 18px 16px 24px;
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: slideUp 0.22s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(40%); opacity: 0.3; }
+    to   { transform: translateY(0); opacity: 1; }
+  }
+  .modal-grip {
+    width: 38px; height: 4px; background: #ddd; border-radius: 4px;
+    margin: -4px auto 12px;
+  }
+  .modal-visual {
+    font-size: 56px; text-align: center;
+    margin-bottom: 10px;
+  }
+  .modal-name {
+    font-size: 17px; font-weight: 800; text-align: center;
+    line-height: 1.3; margin-bottom: 6px;
+  }
+  .modal-cat {
+    font-size: 11px; color: #888; text-align: center;
+    margin-bottom: 14px;
+  }
+  .modal-section { margin-bottom: 14px; }
+  .modal-section-title {
+    font-size: 11px; font-weight: 700; color: #06C755;
+    margin-bottom: 6px; letter-spacing: 0.04em;
+  }
+  .modal-section-body {
+    font-size: 13px; color: #333; line-height: 1.7;
+  }
+  .modal-budget {
+    background: #f6faf7; border: 1px solid #d5edd8;
+    border-radius: 10px; padding: 10px 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .modal-budget-label { font-size: 11px; color: #777; }
+  .modal-budget-value { font-size: 16px; font-weight: 800; color: #00884a; flex: 1; text-align: right; }
+
+  .modal-sub-list {
+    display: flex; flex-direction: column; gap: 7px;
+  }
+  .modal-sub-item {
+    border: 1.5px solid;
+    border-radius: 10px;
+    padding: 9px 11px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .modal-sub-item[data-sub="shoryokuka"]   { border-color: #ffd9b3; background: #fff8f0; }
+  .modal-sub-item[data-sub="monozukuri"]   { border-color: #ffc4c4; background: #fff5f5; }
+  .modal-sub-item[data-sub="jizokuka"]     { border-color: #b2e8cb; background: #f4fbf6; }
+  .modal-sub-item[data-sub="it"]           { border-color: #c8d6ff; background: #f4f7ff; }
+  .modal-sub-item[data-sub="gyomukaizen"]  { border-color: #ddc6ff; background: #f8f4ff; }
+  .modal-sub-item[data-sub="shineigi"]     { border-color: #fde68a; background: #fffdf0; }
+  .modal-sub-icon { font-size: 22px; flex-shrink: 0; }
+  .modal-sub-text { flex: 1; }
+  .modal-sub-name { font-size: 13px; font-weight: 700; color: #222; }
+  .modal-sub-amt  { font-size: 11px; color: #666; margin-top: 1px; }
+
+  .modal-cta {
+    display: block; width: 100%;
+    background: #06C755; color: white;
+    border: none; border-radius: 12px;
+    padding: 14px;
+    font-size: 14px; font-weight: 700;
+    text-decoration: none; text-align: center;
+    margin-top: 14px; cursor: pointer;
+    box-shadow: 0 3px 10px rgba(6,199,85,0.35);
+  }
+  .modal-close {
+    position: absolute; top: 14px; right: 14px;
+    background: rgba(0,0,0,0.06); border: none;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    font-size: 16px; color: #555;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ─── FOOTER CTA ─── */
+  .footer-cta {
+    margin: 24px 12px 12px;
+    padding: 16px;
+    background: white;
+    border-radius: 14px;
+    text-align: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .footer-cta-text {
+    font-size: 13px; color: #444; line-height: 1.6;
+    margin-bottom: 12px;
+  }
+  .footer-cta-btn {
+    display: inline-block;
+    background: #06C755; color: white;
+    padding: 12px 22px; border-radius: 22px;
+    font-size: 13px; font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 3px 10px rgba(6,199,85,0.35);
+  }
+  .footer-note {
+    text-align: center; padding: 12px;
+    font-size: 10.5px; color: #999;
+    line-height: 1.5;
+  }
+  .fab {
+    position: fixed; bottom: 18px; right: 16px;
+    background: #06C755; color: white; border: none;
+    border-radius: 22px; padding: 10px 16px;
+    font-size: 12px; font-weight: 700;
+    box-shadow: 0 4px 14px rgba(6,199,85,0.45);
+    cursor: pointer;
+    z-index: 200;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div class="header-icon">🏗️</div>
+    <div>
+      <h1>建設業・解体業｜補助金で買えるもの図鑑</h1>
+      <div class="header-sub">人手不足・省人化・DX・解体現場対応の設備を一覧で｜更新 2026/5/27</div>
+    </div>
+  </div>
+</div>
+
+<!-- INDUSTRY SWITCHER -->
+<div class="ind-bar">
+  <a class="ind-chip" href="kaerumono_index.html" style="background:#f0faf4;color:#06C755;border-color:#06C755;text-decoration:none;">📋 一覧</a>
+  <div class="ind-chip active">🏗️ 建設・解体業</div>
+  <a class="ind-chip" href="seizou_kaerumono.html" style="text-decoration:none;">🏭 製造業</a>
+  <a class="ind-chip" href="unsou_kaerumono.html" style="text-decoration:none;">🚛 運送業</a>
+  <a class="ind-chip" href="inshoku_kaerumono.html" style="text-decoration:none;">🍽️ 飲食業</a>
+  <a class="ind-chip" href="iryou_kaerumono.html" style="text-decoration:none;">🏥 医療業</a>
+  <a class="ind-chip" href="kaigo_kaerumono.html" style="text-decoration:none;">🧓 介護福祉業</a>
+  <a class="ind-chip" href="kouri_kaerumono.html" style="text-decoration:none;">🛒 小売業</a>
+  <a class="ind-chip" href="biyou_kaerumono.html" style="text-decoration:none;">💇 美容業</a>
+</div>
+
+<!-- SUMMARY -->
+<div class="summary">
+  <div class="summary-lead">
+    建設業・解体業では <strong>人手不足・若手離れ・働き方改革・粉じん対応</strong> が大きな課題。
+    施工の省人化・DX・安全管理・解体現場の機械化に役立つ設備を、補助金を活用して<strong>自己負担1/2〜1/3で導入</strong>できます。
+    <br><span style="color:#c0392b;font-weight:700;">💡 申請から発注可能まで約6か月かかります。早めの準備を。</span>
+  </div>
+  <div class="summary-grid">
+    <div class="sm-tile">
+      <div class="sm-tile-label">予算イメージ</div>
+      <div class="sm-tile-value">100万〜3,000万</div>
+    </div>
+    <div class="sm-tile">
+      <div class="sm-tile-label">補助率</div>
+      <div class="sm-tile-value">1/2 〜 2/3</div>
+    </div>
+  </div>
+  <div class="summary-subsidies-label">使える主な補助金（タップでフィルタ）</div>
+  <div class="summary-subsidies">
+    <span class="sub-chip" data-sub="shoryokuka"  onclick="setFilter('shoryokuka')">省力化投資</span>
+    <span class="sub-chip" data-sub="monozukuri"  onclick="setFilter('monozukuri')">ものづくり</span>
+    <span class="sub-chip" data-sub="jizokuka"    onclick="setFilter('jizokuka')">小規模持続化</span>
+    <span class="sub-chip" data-sub="it"          onclick="setFilter('it')">AI導入</span>
+    <span class="sub-chip" data-sub="gyomukaizen" onclick="setFilter('gyomukaizen')">業務改善</span>
+  </div>
+</div>
+
+<!-- FILTER -->
+<div class="filter-bar">
+  <div class="filter-label">この補助金で買えるものに絞る</div>
+  <div class="filter-chips">
+    <div class="filter-chip active" data-f="all"          onclick="setFilter('all')">すべて</div>
+    <div class="filter-chip"        data-f="shoryokuka"   onclick="setFilter('shoryokuka')">省力化投資</div>
+    <div class="filter-chip"        data-f="monozukuri"   onclick="setFilter('monozukuri')">ものづくり</div>
+    <div class="filter-chip"        data-f="jizokuka"     onclick="setFilter('jizokuka')">持続化</div>
+    <div class="filter-chip"        data-f="it"           onclick="setFilter('it')">AI導入</div>
+    <div class="filter-chip"        data-f="gyomukaizen"  onclick="setFilter('gyomukaizen')">業務改善</div>
+  </div>
+</div>
+
+<div class="visible-count">現在 <span id="visibleCount">0</span> 件を表示中</div>
+
+<!-- ITEM CATALOG -->
+<div id="catalog"></div>
+
+<div class="footer-note">
+  ※ 補助金は申請から発注まで約6か月かかります<br>
+  ※ 採択を保証するものではありません。詳細は税理士事務所までお問い合わせください
+  <div style="margin-top:6px;color:#bbb;">監修：ミライズ会計事務所</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-back" id="modalBack" onclick="closeModalOnBg(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-grip"></div>
+    <div class="modal-visual" id="mVisual"></div>
+    <div class="modal-name" id="mName"></div>
+    <div class="modal-cat" id="mCat"></div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">📝 こんな現場・課題に</div>
+      <div class="modal-section-body" id="mUsecase"></div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">💰 価格イメージ</div>
+      <div class="modal-budget">
+        <span class="modal-budget-label">本体・導入費</span>
+        <span class="modal-budget-value" id="mPrice"></span>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">🎯 使える補助金</div>
+      <div class="modal-sub-list" id="mSubsidies"></div>
+    </div>
+
+  </div>
+</div>
+
+<button class="fab" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆ トップ</button>
+
+<script>
+// ─── 補助金マスター ───
+const SUBS = {
+  shoryokuka:  { name: "省力化投資補助金", icon: "🤖", amt: "500万〜1億円・補助率1/2〜2/3" },
+  monozukuri:  { name: "ものづくり補助金 / 新事業進出統合", icon: "⚙️", amt: "750万〜3,500万・補助率1/2〜2/3" },
+  jizokuka:    { name: "小規模事業者持続化補助金", icon: "📣", amt: "50万〜250万・補助率2/3〜3/4" },
+  it:          { name: "AI導入補助金", icon: "🤖", amt: "5万〜450万・補助率1/2〜4/5" },
+  gyomukaizen: { name: "業務改善助成金（賃上げ＋設備）", icon: "💼", amt: "30万〜600万" },
+  shineigi:    { name: "新事業進出補助金", icon: "🚀", amt: "750万〜9,000万・補助率1/2〜2/3" },
+};
+
+// ─── 建設業 買えるものデータ（PDF構造に準拠） ───
+const CATEGORIES = [
+  {
+    title: "施工用主力機械・ICT建機",
+    sub: "現場の主役。3D/GPS制御で精度UP・人数削減",
+    emoji: "🚜",
+    items: [
+      { v:"🚜", name:"ICT油圧ショベル",          desc:"3Dマシンガイダンスで丁張りなしの精密掘削", price:"800万〜2,500万", subs:["shoryokuka","monozukuri"], popular:true,
+        uc:"丁張り作業を削減し、若手オペレーターでもベテラン並みの精度で掘削できます。i-Construction工事の必須設備。" },
+      { v:"🚧", name:"ICTブルドーザー",          desc:"自動制御で効率的な土工を実現",       price:"1,200万〜3,500万", subs:["monozukuri","shineigi"],
+        uc:"GNSS連動で設計通りに自動整地。経験の浅いオペレーターでも高品質施工が可能。" },
+      { v:"⚡", name:"電動油圧ショベル(GX建機)",  desc:"ゼロエミッション・静音で都市部に最適",  price:"1,000万〜2,800万", subs:["monozukuri","shineigi"],
+        uc:"住宅地・夜間工事・室内解体で活躍。CO2削減でグリーン入札の加点にも。" },
+      { v:"🔋", name:"電動ホイールローダ",        desc:"パワフルな電動駆動・低騒音",         price:"800万〜2,200万", subs:["monozukuri","shineigi"],
+        uc:"屋内作業場や夜間現場で排ガス・騒音を気にせず稼働。燃料費も大幅削減。" },
+      { v:"🛠️", name:"ICT対応バックホウ",         desc:"小規模現場でもICT施工に対応",        price:"500万〜1,500万", subs:["shoryokuka","monozukuri"],
+        uc:"住宅基礎・小規模土木で活躍。MGバケットで誰でも設計通りの仕上げに。" },
+      { v:"🤖", name:"自動整地機能付き建設機械",   desc:"レーザー制御で高精度な自動整地",     price:"1,500万〜3,000万", subs:["shoryokuka","monozukuri"],
+        uc:"アスファルト舗装・床コンクリ均しを自動化。仕上げ手間と人員を削減。" },
+      { v:"🏗️", name:"省力化対応ミニショベル",    desc:"狭小地での作業に最適",              price:"300万〜800万", subs:["jizokuka","shoryokuka"],
+        uc:"庭・路地・室内解体など人力に頼っていた現場を機械化。1人施工が可能に。" },
+      { v:"🔧", name:"多機能アタッチメント(クイックカプラー)", desc:"持替時間半減・1台で多用途化",   price:"50万〜300万", subs:["shoryokuka","jizokuka","monozukuri"], popular:true,
+        uc:"バケット・ブレーカー・グラップル・カッターを油圧切替で瞬時に交換。建機を持つほぼ全業者で1台あたりの稼働効率が大きく向上。段取り替えで失っていた1日30〜60分を取り戻せます。" },
+    ]
+  },
+  {
+    title: "自動化・省力化設備（人手不足対応）",
+    sub: "重作業や危険作業をロボット・アシストで",
+    emoji: "🦾",
+    items: [
+      { v:"🛻", name:"無人搬送車(AGV・AMR)",      desc:"工場・ヤード内の資材搬送を無人化",  price:"300万〜1,500万", subs:["shoryokuka","monozukuri"],
+        uc:"プレキャスト工場や大規模ヤードで資材運びの人員をゼロに。24時間稼働可能。" },
+      { v:"📦", name:"資材自動搬送装置",          desc:"搬送を自動化し人手を削減",         price:"500万〜2,000万", subs:["shoryokuka","monozukuri"],
+        uc:"鉄筋・コンクリ・型枠を必要な場所へ自動搬送。腰痛・労災リスクを軽減。" },
+      { v:"🦾", name:"建設作業支援ロボット",       desc:"重作業・危険作業をロボットで補助",  price:"500万〜2,500万", subs:["shoryokuka","monozukuri"], popular:true,
+        uc:"鉄筋結束・墨出し・溶接など熟練作業をロボット化。技能継承の悩みを解決。" },
+      { v:"🏗️", name:"自動打設補助装置",          desc:"コンクリ打設の効率化・省力化",     price:"400万〜1,500万", subs:["shoryokuka","monozukuri"],
+        uc:"ポンプ車先端の自動制御で打設品質を均一化。打設チームを2名以上削減。" },
+      { v:"⚙️", name:"自動締固め機器",            desc:"均一で効率的な締固めを自動化",     price:"200万〜700万", subs:["jizokuka","shoryokuka"],
+        uc:"GNSS制御の振動ローラ等で締固め回数を可視化。施工品質を数値で証明可能。" },
+      { v:"🔥", name:"半自動溶接装置",            desc:"高品質な溶接を半自動化",           price:"100万〜500万", subs:["jizokuka","shoryokuka"],
+        uc:"鉄骨製作・配管溶接を熟練工なしで再現。溶接士不足の解決策に。" },
+      { v:"🎮", name:"遠隔操作対応建機システム",   desc:"危険現場でも安全に操作",          price:"800万〜2,500万", subs:["shoryokuka","shineigi"],
+        uc:"災害復旧・解体・斜面工事で人を入れずに施工。安全性が劇的に向上。" },
+      { v:"🦺", name:"施工補助用アシスト装置",     desc:"パワーアシストで作業員の負担軽減", price:"30万〜200万", subs:["shoryokuka","jizokuka","gyomukaizen"], popular:true,
+        uc:"重量物運搬・型枠運びの腰痛防止に。高齢作業員の現場復帰を後押し。" },
+      { v:"🔗", name:"自動鉄筋結束ロボット(携帯型)", desc:"結束時間1/3・腰痛者の現場復帰",   price:"100万〜400万", subs:["shoryokuka","jizokuka","gyomukaizen"], popular:true,
+        uc:"手持ち型自動結束機で結束時間を1/3に短縮。歩行型なら立ち姿勢で結束可能で、腰痛で第一線を離れた鉄筋工の現場復帰にも貢献。" },
+      { v:"🎨", name:"塗装ロボット(外壁・屋根)",   desc:"塗装工1名で2倍面積・足場員も削減", price:"200万〜800万", subs:["shoryokuka","monozukuri"],
+        uc:"外壁・屋根用塗装ロボットで、塗装工1人あたりの施工面積が2倍に。足場上での長時間作業からも解放され、安全性も向上。塗装業の決定打。" },
+      { v:"💨", name:"自動吹付け機(モルタル・断熱材)", desc:"左官2名→1名、施工速度2倍",       price:"200万〜800万", subs:["shoryokuka","monozukuri"],
+        uc:"モルタル・断熱材の吹付けを自動化。左官2名で行っていた施工を1名＋装置でこなせるようになり、人手不足が深刻な左官・防水業の決定打。" },
+      { v:"🚁", name:"インフラ点検用ドローン",     desc:"橋梁・法面など難所を効率点検",    price:"100万〜800万", subs:["shoryokuka","monozukuri"], popular:true,
+        uc:"老朽インフラ点検の市場拡大に対応。足場不要・短時間でインフラ点検事業を開始。" },
+    ]
+  },
+  {
+    title: "測量・現場把握機器",
+    sub: "ドローン・3D測量で工期短縮・出来形管理",
+    emoji: "📡",
+    items: [
+      { v:"📐", name:"地上型3Dレーザースキャナー", desc:"高精度3Dデータで現場をデジタル化",  price:"400万〜1,200万", subs:["monozukuri","shineigi"],
+        uc:"現場全体を数分でスキャン。出来形管理・差分検証・履歴記録に活用。" },
+      { v:"📱", name:"モバイル型3Dスキャナー",     desc:"歩きながら広範囲を効率スキャン",  price:"200万〜800万", subs:["it","monozukuri"],
+        uc:"トンネル内・建屋内など固定式が使えない現場でも、歩くだけで3D化。" },
+      { v:"📡", name:"GNSS測量機(RTK対応)",        desc:"センチ級のリアルタイム位置測位",  price:"100万〜400万", subs:["jizokuka","monozukuri"], popular:true,
+        uc:"丁張り・杭打ち・出来形測量を1人で完結。測量チームを半減。" },
+      { v:"🛰️", name:"GNSS基準局+移動局セット",   desc:"簡易設置できる高精度測量",         price:"150万〜500万", subs:["jizokuka","monozukuri"],
+        uc:"自社現場専用のRTK環境を構築。月額サービス料が不要に。" },
+      { v:"🚁", name:"RTK対応測量ドローン",        desc:"高精度な空中測量を実現",          price:"100万〜500万", subs:["jizokuka","shoryokuka"], popular:true,
+        uc:"造成・土工・橋梁の出来形を1日でデータ化。地上測量の1/5の時間。" },
+      { v:"🛩️", name:"出来形管理・土量算出ドローン", desc:"空撮で出来形・土量を迅速正確",   price:"80万〜400万", subs:["jizokuka","it"],
+        uc:"切土・盛土の土量計算が自動。月次出来高報告の作成時間を激減。" },
+    ]
+  },
+  {
+    title: "ICT・施工管理・安全・資材のDXシステム",
+    sub: "現場と本社をつなぐクラウド・ペーパーレス（施工管理／安全／資材）",
+    emoji: "💻",
+    items: [
+      { v:"☁️", name:"クラウド施工管理システム",   desc:"現場情報をクラウドで一元管理",     price:"月3万〜・初期20万〜100万", subs:["it","jizokuka"], popular:true,
+        uc:"複数現場の進捗・原価・写真をスマホで即確認。月次会議用の資料作成も不要に。" },
+      { v:"📸", name:"工事写真管理クラウド",       desc:"電子黒板対応・自動仕分け",         price:"月1万〜・初期10万〜50万", subs:["it","jizokuka"],
+        uc:"スマホで撮影→自動で工種別フォルダ振り分け。竣工アルバム作成が数時間で完成。" },
+      { v:"📊", name:"工程表自動作成システム",      desc:"工程・進捗をリアルタイム反映",     price:"月2万〜・初期20万〜80万", subs:["it","jizokuka"],
+        uc:"Excel管理から脱却。協力会社へも自動共有され、工程変更の連絡漏れがゼロに。" },
+      { v:"💴", name:"原価管理システム(工事別)",   desc:"工事別の収支をリアルタイム",      price:"月3万〜・初期30万〜150万", subs:["it","jizokuka"], popular:true,
+        uc:"赤字工事を月初に発見。手遅れになる前に追加請求・原価見直しを判断できる。" },
+      { v:"🛡️", name:"現場安全管理クラウド",       desc:"リスクアセス・記録を一元化",       price:"月1万〜・初期10万〜40万", subs:["it","gyomukaizen"],
+        uc:"安全書類の電子化で監督官庁・元請への提出工数を激減。書類紛失リスクもゼロ。" },
+      { v:"🏷️", name:"RFID資材管理システム",      desc:"ICタグで瞬時の棚卸・受発注",      price:"100万〜500万", subs:["shoryokuka","it"],
+        uc:"鉄筋・型枠などをタグ管理し、棚卸を数十分で完了。資材紛失も即追跡。" },
+    ]
+  },
+  {
+    title: "解体・破砕・環境対策設備",
+    sub: "解体業の主力機械と粉じん・近隣対策（NEW）",
+    emoji: "🏚️",
+    items: [
+      { v:"🦏", name:"ロングアームバックホウ(13〜30m級)", desc:"上部解体の足場・人員 大幅減",    price:"2,500万〜8,000万", subs:["monozukuri","shineigi","shoryokuka"],
+        uc:"中高層建物の上部解体を、足場を組まずにロングアームで実施可能。手バラシ・人力解体に頼っていた工程を機械化し、安全性と工期を同時に改善。" },
+      { v:"🦷", name:"大型油圧ニブラ/圧砕機",      desc:"手バラシ作業ゼロ化、解体業の主役",  price:"300万〜1,500万", subs:["shoryokuka","monozukuri"], popular:true,
+        uc:"RC造・SRC造の解体で、手バラシ・ハツリ作業を完全に機械化。解体作業員2〜3名分の人工が削減でき、振動・騒音も低減。解体業者ほぼ全員が候補となる定番設備。" },
+      { v:"🔨", name:"大型油圧ブレーカー",         desc:"コンクリ斫り作業の省人化",         price:"200万〜1,000万", subs:["shoryokuka","jizokuka","monozukuri"],
+        uc:"コンクリ斫り・解体・基礎撤去で従来の手作業を機械化。重機オペレーター1名で従来の斫り工3〜5名分の作業をこなせます。" },
+      { v:"💧", name:"自動高圧ミスト散水システム",  desc:"散水要員不要・粉じん飛散ゼロ",     price:"100万〜500万", subs:["shoryokuka","jizokuka","monozukuri"], popular:true,
+        uc:"解体現場の粉じん飛散を自動ミストで抑制。これまで散水ホースを持ち続けていた専属作業員1〜2名を完全に削減でき、近隣クレーム対応工数も激減。SDGs・住民対応の文脈で行政加点も狙える。" },
+    ]
+  },
+];
+
+// ─── 描画 ───
+function renderCatalog() {
+  const root = document.getElementById('catalog');
+  root.innerHTML = '';
+  CATEGORIES.forEach((cat, ci) => {
+    const sec = document.createElement('div');
+    sec.className = 'cat-section';
+    sec.dataset.cat = ci;
+
+    const head = document.createElement('div');
+    head.className = 'cat-header';
+    head.innerHTML = `
+      <div class="cat-emoji">${cat.emoji}</div>
+      <div>
+        <div class="cat-title">${cat.title}</div>
+        <div class="cat-sub">${cat.sub}</div>
+      </div>`;
+    sec.appendChild(head);
+
+    const grid = document.createElement('div');
+    grid.className = 'item-grid';
+
+    cat.items.forEach((it, ii) => {
+      const subsHtml = it.subs.map(s => `<span class="item-sub-chip" data-sub="${s}">${SUBS[s].name.replace('補助金','').replace('助成金','').slice(0,5)}</span>`).join('');
+      const card = document.createElement('div');
+      card.className = 'item';
+      card.dataset.subs = it.subs.join(',');
+      card.innerHTML = `
+        ${it.popular ? '<div class="item-popular">🔥 人気</div>' : ''}
+        <div class="item-visual">${it.v}</div>
+        <div class="item-name">${it.name}</div>
+        <div class="item-desc">${it.desc}</div>
+        <div class="item-subs">${subsHtml}</div>
+        <div class="item-price">💰 ${it.price}</div>`;
+      card.onclick = () => openModal(ci, ii);
+      grid.appendChild(card);
+    });
+    sec.appendChild(grid);
+    root.appendChild(sec);
+  });
+  applyFilter();
+}
+
+// ─── フィルタ ───
+let currentFilter = 'all';
+function setFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-chip').forEach(c => {
+    c.classList.toggle('active', c.dataset.f === f);
+  });
+  // also highlight matching summary chip
+  document.querySelectorAll('.sub-chip').forEach(c => {
+    c.style.outline = (c.dataset.sub === f) ? '2px solid #06C755' : 'none';
+    c.style.outlineOffset = '1px';
+  });
+  applyFilter();
+  // scroll to first category area
+  window.scrollTo({ top: document.querySelector('.filter-bar').offsetTop - 60, behavior: 'smooth' });
+}
+function applyFilter() {
+  let visible = 0;
+  document.querySelectorAll('.cat-section').forEach(sec => {
+    let secVisible = 0;
+    sec.querySelectorAll('.item').forEach(card => {
+      const subs = card.dataset.subs.split(',');
+      const ok = currentFilter === 'all' || subs.includes(currentFilter);
+      card.dataset.hidden = ok ? 'false' : 'true';
+      if (ok) { secVisible++; visible++; }
+    });
+    sec.dataset.empty = secVisible === 0 ? 'true' : 'false';
+  });
+  document.getElementById('visibleCount').textContent = visible;
+}
+
+// ─── モーダル ───
+function openModal(ci, ii) {
+  const it = CATEGORIES[ci].items[ii];
+  document.getElementById('mVisual').textContent = it.v;
+  document.getElementById('mName').textContent = it.name;
+  document.getElementById('mCat').textContent = CATEGORIES[ci].title;
+  document.getElementById('mUsecase').textContent = it.uc;
+  document.getElementById('mPrice').textContent = it.price;
+  const sl = document.getElementById('mSubsidies');
+  sl.innerHTML = it.subs.map(s => `
+    <div class="modal-sub-item" data-sub="${s}">
+      <div class="modal-sub-icon">${SUBS[s].icon}</div>
+      <div class="modal-sub-text">
+        <div class="modal-sub-name">${SUBS[s].name}</div>
+        <div class="modal-sub-amt">${SUBS[s].amt}</div>
+      </div>
+    </div>`).join('');
+  document.getElementById('modalBack').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('modalBack').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeModalOnBg(e) {
+  if (e.target.id === 'modalBack') closeModal();
+}
+
+renderCatalog();
+</script>
+</body>
+</html>
