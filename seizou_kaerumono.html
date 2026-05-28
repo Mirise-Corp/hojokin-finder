@@ -1,0 +1,678 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>製造業｜補助金で買えるもの図鑑</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", sans-serif;
+    background: #f0f0f0;
+    color: #222;
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    -webkit-text-size-adjust: 100%;
+  }
+  .header {
+    background: linear-gradient(135deg, #06C755 0%, #00A546 100%);
+    color: white;
+    padding: 14px 16px 14px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .header-top { display: flex; align-items: center; gap: 10px; }
+  .header-icon {
+    width: 38px; height: 38px;
+    background: rgba(255,255,255,0.22);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+  .header h1 { font-size: 16px; font-weight: 700; line-height: 1.3; }
+  .header-sub { font-size: 11px; opacity: 0.9; margin-top: 2px; }
+
+  .ind-bar {
+    background: white;
+    padding: 10px 12px 8px;
+    border-bottom: 1px solid #e8e8e8;
+    overflow-x: auto;
+    scrollbar-width: none;
+    display: flex; gap: 8px;
+  }
+  .ind-bar::-webkit-scrollbar { display: none; }
+  .ind-chip {
+    flex-shrink: 0;
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 7px 13px;
+    border-radius: 18px;
+    border: 1.5px solid #e0e0e0;
+    background: #fafafa;
+    font-size: 12.5px;
+    font-weight: 600; color: #555;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: none;
+  }
+  .ind-chip.active {
+    background: #06C755; color: white; border-color: #06C755;
+    box-shadow: 0 2px 6px rgba(6,199,85,0.35);
+  }
+  .ind-chip.coming { color: #aaa; background: #f7f7f7; cursor: default; }
+  .ind-chip.coming::after { content: " 準備中"; font-size: 10px; opacity: 0.7; }
+
+  .summary {
+    background: white;
+    margin: 12px 12px 0;
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .summary-lead {
+    font-size: 13px; line-height: 1.65; color: #333;
+    margin-bottom: 12px;
+  }
+  .summary-lead strong { color: #c0392b; font-weight: 700; }
+  .summary-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .sm-tile {
+    background: #f7faf8;
+    border: 1px solid #d5edd8;
+    border-radius: 10px;
+    padding: 9px 11px;
+  }
+  .sm-tile-label { font-size: 10.5px; color: #666; margin-bottom: 3px; }
+  .sm-tile-value { font-size: 14px; font-weight: 800; color: #00884a; line-height: 1.25; }
+
+  .summary-subsidies-label {
+    font-size: 11px; font-weight: 700; color: #666;
+    margin-bottom: 6px;
+  }
+  .summary-subsidies {
+    display: flex; flex-wrap: wrap; gap: 5px;
+  }
+  .sub-chip {
+    font-size: 11px; padding: 3px 8px; border-radius: 12px;
+    font-weight: 700; cursor: pointer;
+    transition: all 0.15s; user-select: none;
+  }
+  .sub-chip[data-sub="shoryokuka"]   { background: #fff3e8; color: #b85a00; border: 1.5px solid #ffd9b3; }
+  .sub-chip[data-sub="monozukuri"]   { background: #fff0f0; color: #c0392b; border: 1.5px solid #ffc4c4; }
+  .sub-chip[data-sub="jizokuka"]     { background: #f0faf4; color: #00884a; border: 1.5px solid #b2e8cb; }
+  .sub-chip[data-sub="it"]           { background: #eef3ff; color: #2253c7; border: 1.5px solid #c8d6ff; }
+  .sub-chip[data-sub="gyomukaizen"]  { background: #f3e8ff; color: #6d28d9; border: 1.5px solid #ddc6ff; }
+
+  .filter-bar {
+    background: white;
+    padding: 10px 12px;
+    margin: 12px 0 0;
+    border-top: 1px solid #e8e8e8;
+    border-bottom: 1px solid #e8e8e8;
+    position: sticky;
+    top: 64px;
+    z-index: 90;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+  }
+  .filter-label {
+    font-size: 11px; font-weight: 700; color: #666;
+    margin-bottom: 7px;
+  }
+  .filter-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .filter-chip {
+    font-size: 12px; padding: 5px 11px;
+    border-radius: 14px; border: 1.5px solid #ddd;
+    background: white; color: #555;
+    font-weight: 600; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filter-chip.active {
+    background: #06C755; color: white; border-color: #06C755;
+  }
+  .filter-chip[data-f="shoryokuka"].active   { background: #f97316; border-color: #f97316; }
+  .filter-chip[data-f="monozukuri"].active   { background: #dc2626; border-color: #dc2626; }
+  .filter-chip[data-f="jizokuka"].active     { background: #06C755; border-color: #06C755; }
+  .filter-chip[data-f="it"].active           { background: #2563eb; border-color: #2563eb; }
+  .filter-chip[data-f="gyomukaizen"].active  { background: #7c3aed; border-color: #7c3aed; }
+
+  .visible-count { margin: 8px 12px 0; font-size: 11.5px; color: #777; }
+  .visible-count span { color: #06C755; font-weight: 700; }
+
+  .cat-section { margin-top: 16px; }
+  .cat-section[data-empty="true"] { display: none; }
+  .cat-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    background: white;
+    margin: 0 12px;
+    border-radius: 12px 12px 0 0;
+    border-bottom: 2px solid #06C755;
+  }
+  .cat-emoji {
+    font-size: 22px; flex-shrink: 0;
+    width: 36px; height: 36px;
+    background: #f0faf4;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cat-title { font-size: 14px; font-weight: 800; color: #222; line-height: 1.3; }
+  .cat-sub   { font-size: 10.5px; color: #888; margin-top: 1px; }
+
+  .item-grid {
+    background: white;
+    margin: 0 12px;
+    border-radius: 0 0 14px 14px;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .item {
+    background: #fafafa;
+    border: 1.5px solid #eee;
+    border-radius: 11px;
+    padding: 10px 9px 9px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex; flex-direction: column;
+    min-height: 138px;
+    position: relative;
+  }
+  .item:hover { border-color: #06C755; background: white; }
+  .item[data-hidden="true"] { display: none; }
+  .item-visual {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 6px;
+    line-height: 1;
+    height: 38px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .item-name {
+    font-size: 12px; font-weight: 700; color: #222;
+    line-height: 1.3; margin-bottom: 4px;
+    min-height: 32px;
+  }
+  .item-desc {
+    font-size: 10.5px; color: #666;
+    line-height: 1.4;
+    flex: 1;
+    margin-bottom: 6px;
+  }
+  .item-subs {
+    display: flex; flex-wrap: wrap; gap: 3px;
+    margin-bottom: 4px;
+  }
+  .item-sub-chip {
+    font-size: 9.5px; padding: 1.5px 6px;
+    border-radius: 8px;
+    font-weight: 700;
+  }
+  .item-sub-chip[data-sub="shoryokuka"]   { background: #fff3e8; color: #b85a00; }
+  .item-sub-chip[data-sub="monozukuri"]   { background: #fff0f0; color: #c0392b; }
+  .item-sub-chip[data-sub="jizokuka"]     { background: #f0faf4; color: #00884a; }
+  .item-sub-chip[data-sub="it"]           { background: #eef3ff; color: #2253c7; }
+  .item-sub-chip[data-sub="gyomukaizen"]  { background: #f3e8ff; color: #6d28d9; }
+  .item-price {
+    font-size: 10.5px; color: #00884a; font-weight: 800;
+    text-align: right;
+  }
+  .item-popular {
+    position: absolute; top: 6px; right: 6px;
+    font-size: 9px; font-weight: 800;
+    background: linear-gradient(135deg, #f59e0b, #fcd34d);
+    color: #78350f;
+    padding: 2px 6px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(245,158,11,0.4);
+  }
+
+  .modal-back {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: none; align-items: flex-end;
+    z-index: 300;
+  }
+  .modal-back.open { display: flex; }
+  .modal {
+    background: white;
+    width: 100%; max-width: 480px;
+    margin: 0 auto;
+    border-radius: 18px 18px 0 0;
+    padding: 18px 16px 24px;
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: slideUp 0.22s ease;
+    position: relative;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(40%); opacity: 0.3; }
+    to   { transform: translateY(0); opacity: 1; }
+  }
+  .modal-grip {
+    width: 38px; height: 4px; background: #ddd; border-radius: 4px;
+    margin: -4px auto 12px;
+  }
+  .modal-visual { font-size: 56px; text-align: center; margin-bottom: 10px; }
+  .modal-name { font-size: 17px; font-weight: 800; text-align: center; line-height: 1.3; margin-bottom: 6px; }
+  .modal-cat { font-size: 11px; color: #888; text-align: center; margin-bottom: 14px; }
+  .modal-section { margin-bottom: 14px; }
+  .modal-section-title {
+    font-size: 12px; font-weight: 700; color: #06C755;
+    margin-bottom: 6px; letter-spacing: 0.04em;
+  }
+  .modal-section-body { font-size: 13px; color: #333; line-height: 1.7; }
+  .modal-budget {
+    background: #f6faf7; border: 1px solid #d5edd8;
+    border-radius: 10px; padding: 10px 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .modal-budget-label { font-size: 11px; color: #777; }
+  .modal-budget-value { font-size: 16px; font-weight: 800; color: #00884a; flex: 1; text-align: right; }
+
+  .modal-sub-list { display: flex; flex-direction: column; gap: 7px; }
+  .modal-sub-item {
+    border: 1.5px solid;
+    border-radius: 10px;
+    padding: 9px 11px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .modal-sub-item[data-sub="shoryokuka"]   { border-color: #ffd9b3; background: #fff8f0; }
+  .modal-sub-item[data-sub="monozukuri"]   { border-color: #ffc4c4; background: #fff5f5; }
+  .modal-sub-item[data-sub="jizokuka"]     { border-color: #b2e8cb; background: #f4fbf6; }
+  .modal-sub-item[data-sub="it"]           { border-color: #c8d6ff; background: #f4f7ff; }
+  .modal-sub-item[data-sub="gyomukaizen"]  { border-color: #ddc6ff; background: #f8f4ff; }
+  .modal-sub-icon { font-size: 22px; flex-shrink: 0; }
+  .modal-sub-text { flex: 1; }
+  .modal-sub-name { font-size: 13px; font-weight: 700; color: #222; }
+  .modal-sub-amt  { font-size: 11px; color: #666; margin-top: 1px; }
+  .modal-close {
+    position: absolute; top: 14px; right: 14px;
+    background: rgba(0,0,0,0.06); border: none;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    font-size: 16px; color: #555;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .footer-note {
+    text-align: center; padding: 12px;
+    font-size: 10.5px; color: #999;
+    line-height: 1.5;
+  }
+  .fab {
+    position: fixed; bottom: 18px; right: 16px;
+    background: #06C755; color: white; border: none;
+    border-radius: 22px; padding: 10px 16px;
+    font-size: 12px; font-weight: 700;
+    box-shadow: 0 4px 14px rgba(6,199,85,0.45);
+    cursor: pointer;
+    z-index: 200;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="header-icon">🏭</div>
+    <div>
+      <h1>製造業｜補助金で買えるもの図鑑</h1>
+      <div class="header-sub">人手不足・自動化・品質管理・DXに使える設備を一覧で｜更新 2026/5/28</div>
+    </div>
+  </div>
+</div>
+
+<div class="ind-bar">
+  <a class="ind-chip" href="kaerumono_index.html" style="background:#f0faf4;color:#06C755;border-color:#06C755;">📋 一覧</a>
+  <a class="ind-chip" href="kensetsu_kaerumono.html">🏗️ 建設・解体業</a>
+  <div class="ind-chip active">🏭 製造業</div>
+  <a class="ind-chip" href="unsou_kaerumono.html">🚛 運送業</a>
+  <a class="ind-chip" href="inshoku_kaerumono.html">🍽️ 飲食業</a>
+  <a class="ind-chip" href="iryou_kaerumono.html">🏥 医療業</a>
+  <a class="ind-chip" href="kaigo_kaerumono.html">🧓 介護福祉業</a>
+  <a class="ind-chip" href="kouri_kaerumono.html">🛒 小売業</a>
+  <a class="ind-chip" href="biyou_kaerumono.html">💇 美容業</a>
+</div>
+
+<div class="summary">
+  <div class="summary-lead">
+    製造業では <strong>人手不足・熟練工の高齢化・歩留り改善・多品種少量化</strong> が大きな課題。
+    工程の省人化・自動化・品質管理DXに役立つ設備を、補助金を活用して<strong>自己負担1/2〜1/3で導入</strong>できます。
+    <br><span style="color:#c0392b;font-weight:700;">💡 申請から発注可能まで約6か月かかります。早めの準備を。</span>
+  </div>
+  <div class="summary-grid">
+    <div class="sm-tile">
+      <div class="sm-tile-label">予算イメージ</div>
+      <div class="sm-tile-value">300万〜3,000万</div>
+    </div>
+    <div class="sm-tile">
+      <div class="sm-tile-label">補助率</div>
+      <div class="sm-tile-value">1/2 〜 2/3</div>
+    </div>
+  </div>
+  <div class="summary-subsidies-label">使える主な補助金（タップでフィルタ）</div>
+  <div class="summary-subsidies">
+    <span class="sub-chip" data-sub="shoryokuka"  onclick="setFilter('shoryokuka')">省力化投資</span>
+    <span class="sub-chip" data-sub="monozukuri"  onclick="setFilter('monozukuri')">ものづくり</span>
+    <span class="sub-chip" data-sub="jizokuka"    onclick="setFilter('jizokuka')">小規模持続化</span>
+    <span class="sub-chip" data-sub="it"          onclick="setFilter('it')">AI導入</span>
+    <span class="sub-chip" data-sub="gyomukaizen" onclick="setFilter('gyomukaizen')">業務改善</span>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <div class="filter-label">この補助金で買えるものに絞る</div>
+  <div class="filter-chips">
+    <div class="filter-chip active" data-f="all"          onclick="setFilter('all')">すべて</div>
+    <div class="filter-chip"        data-f="shoryokuka"   onclick="setFilter('shoryokuka')">省力化投資</div>
+    <div class="filter-chip"        data-f="monozukuri"   onclick="setFilter('monozukuri')">ものづくり</div>
+    <div class="filter-chip"        data-f="jizokuka"     onclick="setFilter('jizokuka')">持続化</div>
+    <div class="filter-chip"        data-f="it"           onclick="setFilter('it')">AI導入</div>
+    <div class="filter-chip"        data-f="gyomukaizen"  onclick="setFilter('gyomukaizen')">業務改善</div>
+  </div>
+</div>
+
+<div class="visible-count">現在 <span id="visibleCount">0</span> 件を表示中</div>
+
+<div id="catalog"></div>
+
+<div class="footer-note">
+  ※ 補助金は申請から発注まで約6か月かかります<br>
+  ※ 採択を保証するものではありません。詳細は税理士事務所までお問い合わせください
+  <div style="margin-top:6px;color:#bbb;">監修：ミライズ会計事務所</div>
+</div>
+
+<div class="modal-back" id="modalBack" onclick="closeModalOnBg(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-grip"></div>
+    <div class="modal-visual" id="mVisual"></div>
+    <div class="modal-name" id="mName"></div>
+    <div class="modal-cat" id="mCat"></div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">📝 こんな現場・課題に</div>
+      <div class="modal-section-body" id="mUsecase"></div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">💰 価格イメージ</div>
+      <div class="modal-budget">
+        <span class="modal-budget-label">本体・導入費</span>
+        <span class="modal-budget-value" id="mPrice"></span>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">🎯 使える補助金</div>
+      <div class="modal-sub-list" id="mSubsidies"></div>
+    </div>
+
+  </div>
+</div>
+
+<button class="fab" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆ トップ</button>
+
+<script>
+const SUBS = {
+  shoryokuka:  { name: "省力化投資補助金", icon: "🤖", amt: "500万〜1億円・補助率1/2〜2/3" },
+  monozukuri:  { name: "ものづくり補助金 / 新事業進出統合", icon: "⚙️", amt: "750万〜3,500万・補助率1/2〜2/3" },
+  jizokuka:    { name: "小規模事業者持続化補助金", icon: "📣", amt: "50万〜250万・補助率2/3〜3/4" },
+  it:          { name: "AI導入補助金", icon: "🤖", amt: "5万〜450万・補助率1/2〜4/5" },
+  gyomukaizen: { name: "業務改善助成金（賃上げ＋設備）", icon: "💼", amt: "30万〜600万" },
+};
+
+const CATEGORIES = [
+  {
+    title: "生産設備・加工機械（主力設備）",
+    sub: "工場の主役。NC・複合化で多品種少量に対応",
+    emoji: "🏭",
+    items: [
+      { v:"⚙️", name:"NC旋盤",                    desc:"円筒形状ワークを高精度切削、夜間無人運転も",   price:"300万〜1,500万", subs:["shoryokuka","monozukuri"], popular:true,
+        uc:"汎用旋盤の手動操作からプログラム加工に転換。熟練オペレーター1名で複数機を運用でき、夜間無人運転で生産性が2倍に。" },
+      { v:"🔧", name:"マシニングセンタ",            desc:"多工程を1台で連続加工・段取り半減",          price:"500万〜3,000万", subs:["shoryokuka","monozukuri"], popular:true,
+        uc:"ATC自動工具交換で複数工程を1台に集約。段取り替え時間を50%削減、5軸機なら複雑形状も一回掴みで完成。" },
+      { v:"🛠️", name:"複合加工機(旋盤＋フライス)",   desc:"段取り替え時間が消滅・リードタイム短縮",     price:"1,500万〜5,000万", subs:["monozukuri","shoryokuka"],
+        uc:"旋削とミーリングを1台で完結。複数機械の段取り替え時間がなくなり、納期回答スピードが上がる。" },
+      { v:"💥", name:"レーザー加工機",              desc:"型不要・多品種少量の板金加工に最適",        price:"1,000万〜5,000万", subs:["monozukuri","shoryokuka"],
+        uc:"ファイバーレーザーで切断速度3倍。型不要で多品種少量の板金加工を内製化でき、外注コスト削減＋短納期対応。" },
+      { v:"🔨", name:"プレス加工機(サーボプレス)",   desc:"高精度な打ち抜き・絞り加工、低騒音",        price:"500万〜3,000万", subs:["monozukuri","shoryokuka"],
+        uc:"サーボ制御で割れ・しわを抑制し難加工材も歩留り改善。打音も低減で職場環境改善＋若手採用にも有効。" },
+      { v:"🧪", name:"射出成形機",                 desc:"プラスチック製品を高精度に量産",            price:"500万〜3,000万", subs:["monozukuri","shoryokuka"],
+        uc:"電動・全電動式なら省エネ＋高精度。多品種少量から量産まで対応し、新製品の試作から量産展開がスムーズ。" },
+      { v:"📐", name:"ベンダー(自動曲げ加工機)",     desc:"プログラム制御で図面どおりに曲げ",          price:"400万〜2,000万", subs:["shoryokuka","monozukuri"],
+        uc:"熟練工の勘に頼っていた曲げ工程を自動化。人材育成期間が大幅短縮され、安定品質を確保。" },
+      { v:"⚡", name:"放電加工機",                  desc:"超精密で複雑な金型加工も可能",              price:"800万〜3,000万", subs:["monozukuri","shoryokuka"],
+        uc:"通常工具では加工困難な硬質材・複雑形状を放電で精密加工。金型製作・試作開発で他社差別化。" },
+    ]
+  },
+  {
+    title: "自動化・省力化・物流搬送設備（人手不足対応）",
+    sub: "ロボット・AGV・自動搬送で人員を半減",
+    emoji: "🦾",
+    items: [
+      { v:"🦾", name:"産業用ロボット(搬送・組立)",   desc:"24時間休まず稼働、3直の省人化",            price:"500万〜2,000万", subs:["shoryokuka","monozukuri"], popular:true,
+        uc:"溶接・組立・搬送を24時間休まず実施。3直シフトの省人化に加え、品質も人手より安定。投資回収は2〜3年が一般的。" },
+      { v:"🤝", name:"協働ロボット",                desc:"安全柵不要で人と並んで作業可能",            price:"300万〜1,000万", subs:["shoryokuka","monozukuri"], popular:true,
+        uc:"安全柵不要で既存ラインに後付け可能。立ち上げが早く、中小製造業の自動化第一歩に最適。" },
+      { v:"📥", name:"自動供給装置(パーツフィーダー)", desc:"小物部品の整列・供給を自動化",            price:"200万〜800万", subs:["shoryokuka","monozukuri"],
+        uc:"ボウルフィーダ等で小物部品を整列供給。組立ライン前の手作業要員を完全に削減できる定番設備。" },
+      { v:"🔩", name:"自動組立装置",                desc:"ねじ締め・圧入・接着を1台に集約",          price:"500万〜2,500万", subs:["shoryokuka","monozukuri"],
+        uc:"組立工程を1台に集約し、組立ライン全体の人員を半数以下に削減。新人教育コストも激減。" },
+      { v:"🛻", name:"無人搬送車(AGV・AMR)",         desc:"工場内搬送を完全無人化",                  price:"300万〜1,500万", subs:["shoryokuka","monozukuri"], popular:true,
+        uc:"工場内搬送を全て無人化。AMRなら経路の自律変更も可能で、レイアウト変更にも柔軟対応。" },
+      { v:"📦", name:"自動梱包機",                  desc:"梱包工程を自動化・出荷効率UP",             price:"300万〜1,500万", subs:["shoryokuka","monozukuri"],
+        uc:"ストレッチ包装・段ボール組立・封函を完全自動化。出荷ピーク時の臨時人員を解消し、固定費削減。" },
+      { v:"📷", name:"自動検査ライン",              desc:"カメラ・センサーで外観検査を自動化",        price:"500万〜2,500万", subs:["shoryokuka","monozukuri"],
+        uc:"全数検査を人手から機械へ。検査員の目視疲労によるバラつきを排除し、不良流出を激減。" },
+      { v:"🤖", name:"ロボットハンド・エンドエフェクタ", desc:"ワーク形状に最適化したハンド",          price:"100万〜500万", subs:["shoryokuka","monozukuri"],
+        uc:"対象ワークに最適化したハンドで把持・組立成功率を最大化。多品種対応の段取り替えも数分で完了。" },
+      { v:"🏬", name:"自動倉庫",                    desc:"入出庫を完全自動化・夜間無人稼働",          price:"2,000万〜1億円", subs:["shoryokuka","monozukuri"], popular:true,
+        uc:"縦に積み上げて土地面積を1/3に。入出庫・棚卸を完全自動化し、夜間無人稼働でリードタイム短縮。" },
+      { v:"🟫", name:"パレット搬送システム",        desc:"パレット単位の工程間搬送を自動化",          price:"500万〜3,000万", subs:["shoryokuka","monozukuri"],
+        uc:"AGV・自動コンベアでパレット搬送。フォークリフト要員と接触事故リスクを同時に削減。" },
+      { v:"➡️", name:"コンベアライン",              desc:"製品搬送を自動化しスループット向上",        price:"300万〜2,000万", subs:["shoryokuka","monozukuri"],
+        uc:"ラインバランシングを再構築でき、サイクルタイムを安定化。新製品・新ライン立ち上げも早い。" },
+      { v:"💡", name:"ピッキング支援システム",      desc:"デジタル指示でピッキングミス激減",          price:"100万〜500万", subs:["shoryokuka","it"],
+        uc:"DPS(デジタルピッキング)でランプ指示・カウント不要。新人でも初日からベテラン同等の生産性。" },
+      { v:"🏷️", name:"ラベリング自動貼付機",        desc:"ラベル貼付を自動化・誤貼り防止",            price:"200万〜800万", subs:["shoryokuka","monozukuri"],
+        uc:"JAN・賞味期限・QRを高速貼付。トレサビリティ要求にも自動対応し、出荷スピードを大幅向上。" },
+      { v:"✅", name:"出荷検品システム",            desc:"出荷前検品を自動化・誤出荷防止",            price:"200万〜1,000万", subs:["shoryokuka","it"],
+        uc:"重量・画像・バーコードを多重チェックして誤出荷ゼロ化。クレーム対応コストの大幅削減に。" },
+    ]
+  },
+  {
+    title: "検査・測定・品質管理設備",
+    sub: "AI画像検査・三次元測定で全数検査を実現",
+    emoji: "🔬",
+    items: [
+      { v:"📐", name:"三次元測定機",                desc:"複雑形状ワークを高精度測定",                price:"500万〜2,500万", subs:["monozukuri","shoryokuka"],
+        uc:"熟練検査員1日かけていた測定が30分に。図面と現物の照合を高精度に自動化し、品質保証部の負荷激減。" },
+      { v:"📸", name:"画像検査装置",                desc:"画像処理で外観を自動検査",                  price:"300万〜1,500万", subs:["shoryokuka","monozukuri"],
+        uc:"光学センサとソフトで全数検査を即時化。検査員の目視疲労を排除し、出荷品質を均一化。" },
+      { v:"🤖", name:"外観検査AIシステム",          desc:"AIで微細な外観不良を検出",                price:"500万〜2,000万", subs:["shoryokuka","it"], popular:true,
+        uc:"傷・打痕・汚れなどの微細不良をディープラーニングで識別。検査員5名→1名のような大幅省人化を実現。" },
+      { v:"📏", name:"レーザー測定器",              desc:"非接触で高速・高精度な距離測定",            price:"200万〜800万", subs:["monozukuri","shoryokuka"],
+        uc:"非接触で対象に触れずに高速計測。柔らかい素材や高温部品の検査にも適し、検査速度・精度ともに向上。" },
+      { v:"🔍", name:"非接触寸法測定装置",          desc:"画像で対象品を非接触計測",                  price:"300万〜1,500万", subs:["monozukuri","shoryokuka"],
+        uc:"投影機・画像測定機での寸法検査を自動化。検査帳票作成までワンストップで完結。" },
+      { v:"〰️", name:"表面粗さ測定機",              desc:"加工面の表面粗さを高精度測定",              price:"100万〜500万", subs:["monozukuri","jizokuka"],
+        uc:"加工面の品質を数値で証明可能。顧客への品質報告書もデータ自動出力でクレーム対応工数激減。" },
+      { v:"💎", name:"硬度試験機",                  desc:"材料硬度を素早く計測",                      price:"100万〜500万", subs:["monozukuri","jizokuka"],
+        uc:"受入検査・出荷検査での材料硬度確認を高速化。検査記録の電子化で品質トレーサビリティも担保。" },
+      { v:"📊", name:"品質データ自動収集システム",   desc:"測定データを自動収集・トレース管理",        price:"200万〜1,000万", subs:["shoryokuka","it"],
+        uc:"測定機・PLC・端末から品質データを一元集約。月次品質会議の資料作成が自動化される。" },
+    ]
+  },
+  {
+    title: "ICT・生産管理・DX設備",
+    sub: "MES・IoT・AIで現場と経営をつなぐ",
+    emoji: "💻",
+    items: [
+      { v:"💻", name:"生産管理システム(MES)",       desc:"工程・品質・設備をリアルタイム把握",        price:"月3万〜・初期100万〜500万", subs:["it","monozukuri"], popular:true,
+        uc:"現場の進捗・品質・設備稼働をリアルタイム可視化。ボトルネック工程を即特定し、改善サイクルを高速化。" },
+      { v:"📈", name:"工程進捗管理システム",        desc:"進捗をリアルタイム把握・納期遅れ防止",      price:"月2万〜・初期50万〜300万", subs:["it","jizokuka"],
+        uc:"工程ごとの遅れを即時アラート。納期遅れ・特急便手配のリスクを未然に防止。" },
+      { v:"📦", name:"在庫管理システム",            desc:"原材料・部品の在庫を正確に管理",            price:"月1.5万〜・初期30万〜200万", subs:["it","jizokuka"],
+        uc:"原材料・仕掛品・完成品を一元管理。発注ミス・余剰在庫を月数百万円削減できる。" },
+      { v:"💴", name:"原価管理システム",            desc:"製品別・ロット別の原価を即時把握",          price:"月3万〜・初期50万〜300万", subs:["it","jizokuka"], popular:true,
+        uc:"赤字製品を月初に発見し、値上げ・改善判断が早くなる。税理士事務所からの経営提案にも直結。" },
+      { v:"📡", name:"実績収集システム(IoT連携)",   desc:"IoTで設備稼働データを自動収集",            price:"200万〜1,000万", subs:["shoryokuka","it"],
+        uc:"稼働実績・段取り時間・チョコ停を自動記録。日報作成時間を月20時間以上削減。" },
+      { v:"🖥️", name:"設備稼働監視システム",        desc:"設備稼働をリアルタイム把握",                price:"200万〜1,000万", subs:["shoryokuka","it"],
+        uc:"予兆保全で計画外停止を予防。OEEを可視化して稼働率を10%以上改善できる。" },
+      { v:"🧠", name:"生産計画自動立案システム",    desc:"AIが最適な生産計画を自動立案",              price:"300万〜1,500万", subs:["it","shoryokuka"],
+        uc:"受注変動・段取り時間・人員制約を考慮した最適計画をAIが自動立案。生産計画担当者の負担を激減。" },
+      { v:"🔗", name:"トレーサビリティ管理システム", desc:"工程履歴から不良ロットを追跡",              price:"200万〜1,500万", subs:["it","monozukuri"],
+        uc:"顧客クレーム時の原因究明が数分で完了。リコール範囲も最小化でき、ブランド毀損を回避。" },
+    ]
+  },
+  {
+    title: "周辺設備・工程改善設備",
+    sub: "洗浄・バリ取り・熱処理など工程の自動化",
+    emoji: "⚙️",
+    items: [
+      { v:"🚿", name:"自動洗浄機",                  desc:"脱脂・洗浄を自動化、薬品被ばく排除",        price:"200万〜1,000万", subs:["shoryokuka","monozukuri"],
+        uc:"洗浄を自動化し、手作業の腰痛・薬品被ばくリスクを排除。サイクルタイムも安定化。" },
+      { v:"🪒", name:"バリ取り装置",                desc:"製品のバリを自動除去",                      price:"300万〜1,500万", subs:["shoryokuka","monozukuri"], popular:true,
+        uc:"ロボット研磨やショットブラストで手作業バリ取りを完全機械化。検査要員の手戻りも激減。" },
+      { v:"💨", name:"乾燥機",                      desc:"洗浄・塗装後の製品を効率乾燥",              price:"100万〜800万", subs:["monozukuri","jizokuka"],
+        uc:"塗装・洗浄後の乾燥工程を一定品質に。気候による乾燥バラつきがゼロになり、品質クレームを防止。" },
+      { v:"🔥", name:"熱処理装置",                  desc:"金属の硬さ・組成を変化させ機能向上",        price:"500万〜3,000万", subs:["monozukuri"],
+        uc:"焼入れ・焼戻しを社内化することで外注費を削減＋リードタイム短縮。技術力の差別化にも。" },
+      { v:"✨", name:"表面処理設備",                desc:"メッキ・コーティング・陽極処理",            price:"500万〜3,000万", subs:["monozukuri"],
+        uc:"メッキ・アルマイト・塗装の工程内製化で付加価値UP。外注依存からの脱却で利益率改善。" },
+      { v:"🌫️", name:"集塵機",                      desc:"工場内の粉塵・煙を捕集",                    price:"100万〜800万", subs:["monozukuri","jizokuka"],
+        uc:"粉塵・オイルミストを集塵し、職場環境を改善。労災防止＋作業員確保に直結する投資。" },
+    ]
+  },
+  {
+    title: "試作・研究・高付加価値化設備",
+    sub: "3Dプリンタ・CAE・CAD/CAMで新製品開発",
+    emoji: "🧪",
+    items: [
+      { v:"🖨️", name:"金属3Dプリンター",            desc:"金属粉末で複雑形状を造形",                  price:"1,000万〜5,000万", subs:["monozukuri"],
+        uc:"従来工法では作れない複雑形状を造形可能。試作リードタイム1/3、新規受注のチャンス拡大。" },
+      { v:"🖨️", name:"樹脂3Dプリンター",            desc:"試作品・治具を短時間で造形",                price:"100万〜800万", subs:["monozukuri","jizokuka"], popular:true,
+        uc:"デザイン検証・治具製作・少量試作に大活躍。営業先での提案資料としても効果絶大。" },
+      { v:"🛠️", name:"試作用加工機",                desc:"試作部品を高精度で効率制作",                price:"500万〜2,500万", subs:["monozukuri"],
+        uc:"試作専用ラインで量産機を止めずに開発を進められる。新製品立ち上げのスピードが2倍に。" },
+      { v:"🖥️", name:"デジタルシミュレーションソフト", desc:"設計・工程をコンピュータ上で仮想検証",   price:"200万〜1,000万", subs:["it","monozukuri"],
+        uc:"金型・成形条件・加工パスを事前検証し、現物試作回数を激減。試作費を年数百万円削減。" },
+      { v:"📐", name:"CAD/CAMシステム",             desc:"設計データを加工データに効率変換",          price:"月3万〜・初期100万〜500万", subs:["it","monozukuri"],
+        uc:"図面から加工データを自動生成。プログラマー不足を解消し、多品種少量の対応力を強化。" },
+      { v:"🔬", name:"材料評価装置",                desc:"材料の強度・硬度などを評価",                price:"300万〜1,500万", subs:["monozukuri"],
+        uc:"受入検査・新素材評価で自社品質基準を確立。客先からの信頼性向上に直結。" },
+    ]
+  },
+];
+
+function renderCatalog() {
+  const root = document.getElementById('catalog');
+  root.innerHTML = '';
+  CATEGORIES.forEach((cat, ci) => {
+    const sec = document.createElement('div');
+    sec.className = 'cat-section';
+    sec.dataset.cat = ci;
+
+    const head = document.createElement('div');
+    head.className = 'cat-header';
+    head.innerHTML = `
+      <div class="cat-emoji">${cat.emoji}</div>
+      <div>
+        <div class="cat-title">${cat.title}</div>
+        <div class="cat-sub">${cat.sub}</div>
+      </div>`;
+    sec.appendChild(head);
+
+    const grid = document.createElement('div');
+    grid.className = 'item-grid';
+
+    cat.items.forEach((it, ii) => {
+      const subsHtml = it.subs.map(s => SUBS[s] ? `<span class="item-sub-chip" data-sub="${s}">${SUBS[s].name.replace('補助金','').replace('助成金','').slice(0,5)}</span>` : '').join('');
+      const card = document.createElement('div');
+      card.className = 'item';
+      card.dataset.subs = it.subs.join(',');
+      card.innerHTML = `
+        ${it.popular ? '<div class="item-popular">🔥 人気</div>' : ''}
+        <div class="item-visual">${it.v}</div>
+        <div class="item-name">${it.name}</div>
+        <div class="item-desc">${it.desc}</div>
+        <div class="item-subs">${subsHtml}</div>
+        <div class="item-price">💰 ${it.price}</div>`;
+      card.onclick = () => openModal(ci, ii);
+      grid.appendChild(card);
+    });
+    sec.appendChild(grid);
+    root.appendChild(sec);
+  });
+  applyFilter();
+}
+
+let currentFilter = 'all';
+function setFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-chip').forEach(c => {
+    c.classList.toggle('active', c.dataset.f === f);
+  });
+  document.querySelectorAll('.sub-chip').forEach(c => {
+    c.style.outline = (c.dataset.sub === f) ? '2px solid #06C755' : 'none';
+    c.style.outlineOffset = '1px';
+  });
+  applyFilter();
+  window.scrollTo({ top: document.querySelector('.filter-bar').offsetTop - 60, behavior: 'smooth' });
+}
+function applyFilter() {
+  let visible = 0;
+  document.querySelectorAll('.cat-section').forEach(sec => {
+    let secVisible = 0;
+    sec.querySelectorAll('.item').forEach(card => {
+      const subs = card.dataset.subs.split(',');
+      const ok = currentFilter === 'all' || subs.includes(currentFilter);
+      card.dataset.hidden = ok ? 'false' : 'true';
+      if (ok) { secVisible++; visible++; }
+    });
+    sec.dataset.empty = secVisible === 0 ? 'true' : 'false';
+  });
+  document.getElementById('visibleCount').textContent = visible;
+}
+
+function openModal(ci, ii) {
+  const it = CATEGORIES[ci].items[ii];
+  document.getElementById('mVisual').textContent = it.v;
+  document.getElementById('mName').textContent = it.name;
+  document.getElementById('mCat').textContent = CATEGORIES[ci].title;
+  document.getElementById('mUsecase').textContent = it.uc;
+  document.getElementById('mPrice').textContent = it.price;
+  const sl = document.getElementById('mSubsidies');
+  sl.innerHTML = it.subs.filter(s => SUBS[s]).map(s => `
+    <div class="modal-sub-item" data-sub="${s}">
+      <div class="modal-sub-icon">${SUBS[s].icon}</div>
+      <div class="modal-sub-text">
+        <div class="modal-sub-name">${SUBS[s].name}</div>
+        <div class="modal-sub-amt">${SUBS[s].amt}</div>
+      </div>
+    </div>`).join('');
+  document.getElementById('modalBack').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('modalBack').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeModalOnBg(e) {
+  if (e.target.id === 'modalBack') closeModal();
+}
+
+renderCatalog();
+</script>
+</body>
+</html>

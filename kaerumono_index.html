@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>補助金で買えるもの（業種別）図鑑</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", sans-serif;
+    background: #f0f0f0;
+    color: #222;
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    background: linear-gradient(135deg, #06C755 0%, #00A546 100%);
+    color: white;
+    padding: 28px 20px 24px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .hero-icon {
+    font-size: 44px;
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+  .hero h1 {
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.35;
+    margin-bottom: 6px;
+  }
+  .hero-sub {
+    font-size: 12.5px;
+    opacity: 0.92;
+    line-height: 1.5;
+  }
+
+  /* ─── INTRO ─── */
+  .intro {
+    background: white;
+    margin: 12px 12px 0;
+    border-radius: 14px;
+    padding: 14px 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    font-size: 13px;
+    color: #444;
+    line-height: 1.7;
+  }
+  .intro strong { color: #00884a; font-weight: 700; }
+  .intro .alert {
+    background: #fffaf0;
+    border-left: 3px solid #f97316;
+    padding: 8px 11px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: #8b5a00;
+    line-height: 1.55;
+    border-radius: 4px;
+  }
+  .intro .alert b { color: #c2410c; }
+
+  /* ─── SECTION LABEL ─── */
+  .sec-label {
+    margin: 18px 16px 8px;
+    font-size: 12px;
+    font-weight: 800;
+    color: #555;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sec-label::before {
+    content: "";
+    display: inline-block;
+    width: 3px; height: 14px;
+    background: #06C755;
+    border-radius: 2px;
+  }
+
+  /* ─── INDUSTRY GRID ─── */
+  .ind-grid {
+    margin: 0 12px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .ind-tile {
+    background: white;
+    border-radius: 14px;
+    padding: 14px 12px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    transition: all 0.18s;
+    border: 2px solid transparent;
+    position: relative;
+    min-height: 138px;
+  }
+  .ind-tile:active {
+    transform: scale(0.97);
+  }
+  .ind-tile:hover {
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+  }
+  .ind-emoji {
+    font-size: 32px;
+    margin-bottom: 8px;
+    line-height: 1;
+    width: 50px; height: 50px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ind-name {
+    font-size: 14px;
+    font-weight: 800;
+    color: #222;
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+  .ind-tag {
+    font-size: 10.5px;
+    color: #777;
+    line-height: 1.45;
+    flex: 1;
+    margin-bottom: 6px;
+  }
+  .ind-count {
+    font-size: 10px;
+    font-weight: 700;
+    color: #06C755;
+    background: #f0faf4;
+    padding: 2px 7px;
+    border-radius: 8px;
+    align-self: flex-start;
+  }
+  .ind-arrow {
+    position: absolute;
+    bottom: 12px; right: 12px;
+    font-size: 14px;
+    color: #ccc;
+    font-weight: 700;
+  }
+
+  /* ─── 業種別カラー ─── */
+  .ind-tile[data-ind="kensetsu"] .ind-emoji { background: #fff3e8; }
+  .ind-tile[data-ind="kensetsu"]:hover { border-color: #f97316; }
+
+  .ind-tile[data-ind="seizou"] .ind-emoji { background: #e8eaff; }
+  .ind-tile[data-ind="seizou"]:hover { border-color: #5c6bc0; }
+
+  .ind-tile[data-ind="unsou"] .ind-emoji { background: #e3f2fd; }
+  .ind-tile[data-ind="unsou"]:hover { border-color: #1976d2; }
+
+  .ind-tile[data-ind="inshoku"] .ind-emoji { background: #fff0f5; }
+  .ind-tile[data-ind="inshoku"]:hover { border-color: #ec407a; }
+
+  .ind-tile[data-ind="iryou"] .ind-emoji { background: #e0f7fa; }
+  .ind-tile[data-ind="iryou"]:hover { border-color: #00acc1; }
+
+  .ind-tile[data-ind="kaigo"] .ind-emoji { background: #f3e8ff; }
+  .ind-tile[data-ind="kaigo"]:hover { border-color: #7c3aed; }
+
+  .ind-tile[data-ind="kouri"] .ind-emoji { background: #e8f5e9; }
+  .ind-tile[data-ind="kouri"]:hover { border-color: #43a047; }
+
+  .ind-tile[data-ind="biyou"] .ind-emoji { background: #fce4ec; }
+  .ind-tile[data-ind="biyou"]:hover { border-color: #d81b60; }
+
+
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-icon">📋</div>
+  <h1>補助金で買えるもの<br>（業種別）図鑑</h1>
+  <div class="hero-sub">補助金で実際に買える設備を、業種別にビジュアルで紹介</div>
+</div>
+
+<!-- INTRO -->
+<div class="intro">
+  補助金に詳しくない方でも、自社の業種で <strong>何が買えるか</strong> がパッとイメージできるカタログです。
+  人手不足解消・DX・新サービス展開などに使える設備を、補助金別にフィルタしてご覧いただけます。
+  <div class="alert">
+    💡 <b>申請から発注可能まで約6か月</b>かかります。気になる設備があれば早めにご相談ください。
+  </div>
+</div>
+
+<!-- INDUSTRY GRID -->
+<div class="sec-label">業種を選んでください（全8業種・308点掲載）</div>
+
+<div class="ind-grid">
+  <a class="ind-tile" data-ind="kensetsu" href="kensetsu_kaerumono.html">
+    <div class="ind-emoji">🏗️</div>
+    <div class="ind-name">建設・解体業</div>
+    <div class="ind-tag">人手不足・省人化・解体現場対応</div>
+    <div class="ind-count">42点掲載</div>
+    <div class="ind-arrow">›</div>
+  </a>
+
+  <a class="ind-tile" data-ind="seizou" href="seizou_kaerumono.html">
+    <div class="ind-emoji">🏭</div>
+    <div class="ind-name">製造業</div>
+    <div class="ind-tag">自動化・品質管理・DX</div>
+    <div class="ind-count">50点掲載</div>
+    <div class="ind-arrow">›</div>
+  </a>
+
+  <a class="ind-tile" data-ind="unsou" href="unsou_kaerumono.html">
+    <div class="ind-emoji">🚛</div>
+    <div class="ind-name">運送業</div>
+    <div class="ind-tag">2024年問題・荷役自動化</div>
+    <div class="ind-count">40点掲載</div>
+    <div class="ind-arrow">›</div>
+  </a>
+
+  <a class="ind-tile" data-ind="inshoku" href="inshoku_kaerumono.html">
+    <div class="ind-emoji">🍽️</div>
+    <div class="ind-name">飲食業</div>
+    <div class="ind-tag">配膳ロボ・テイクアウト対応</div>
+    <div class="ind-count">48点掲載</div>
+    <div class="ind-arrow">›</div>
+  </a>
+
+  <a class="ind-tile" data-ind="iryou" href="iryou_kaerumono.html">
+    <div class="ind-emoji">🏥</div>
+    <div class="ind-name">医療業</div>
+    <div class="ind-tag">電子カルテ・自動精算・感染対策</div>
+    <div class="ind-count">32点掲載</div>
+    <div class="ind-arrow">›</div>
+  </a>
+
+  <a class="ind-tile" data-ind="kaigo" href="kaigo_kaerumono.html">
+    <div class="ind-emoji">🧓</div>
+    <div class="ind-name">介護福祉業</div>
+    <div class="ind-tag">介護負担軽減・見守りセンサー</div>
+    <div class="ind-count">28点掲載</div>
+    <div class="ind-arrow">›</div>
+  </a>
+
+  <a class="ind-tile" data-ind="kouri" href="kouri_kaerumono.html">
+    <div class="ind-emoji">🛒</div>
+    <div class="ind-name">小売業</div>
+    <div class="ind-tag">レジ省人化・在庫管理・EC展開</div>
+    <div class="ind-count">36点掲載</div>
+    <div class="ind-arrow">›</div>
+  </a>
+
+  <a class="ind-tile" data-ind="biyou" href="biyou_kaerumono.html">
+    <div class="ind-emoji">💇</div>
+    <div class="ind-name">美容業</div>
+    <div class="ind-tag">客単価UP・サブスク・新メニュー</div>
+    <div class="ind-count">32点掲載</div>
+    <div class="ind-arrow">›</div>
+  </a>
+</div>
+
+<div style="text-align:center;padding:20px 16px 24px;font-size:10.5px;color:#999;line-height:1.6;">
+  ※ 価格・補助金情報は概算目安です<br>
+  ※ 採択を保証するものではありません
+</div>
+
+</body>
+</html>
