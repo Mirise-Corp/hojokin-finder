@@ -219,8 +219,8 @@
     padding: 2px 8px; border-radius: 20px;
     white-space: nowrap;
   }
-  .type-label-subsidy { background: #e6f9ee; color: #00884a; border: 1px solid #b2e8cb; padding: 2px 7px; border-radius: 10px; font-size: 10px; font-weight: 700; }
-  .type-label-grant   { background: #dbeafe; color: #1d4ed8; border: 1px solid #93c5fd; padding: 2px 7px; border-radius: 10px; font-size: 10px; font-weight: 700; }
+  .type-label-subsidy { display: none; }
+  .type-label-grant   { display: none; }
 
   .card-desc {
     padding: 0 14px 10px;
@@ -336,7 +336,7 @@
   }
   .section-divider-line { flex: 1; height: 1px; background: #ddd; }
   .section-divider-label {
-    font-size: 11px; font-weight: 700; padding: 3px 10px;
+    font-size: 22px; font-weight: 700; padding: 6px 16px;
     border-radius: 12px;
   }
   .sdl-subsidy { background: #e6f9ee; color: #00884a; border: 1px solid #b2e8cb; }
@@ -413,13 +413,12 @@
 <div class="status-tab waiting" onclick="filterStatus('waiting', this)">🟡 公募待ち 0件</div>
 <div class="status-tab closed" onclick="filterStatus('closed', this)">⚪ 公募終了 1件</div>
 </div>
-<div class="summary-bar">現在 <span id="visibleCount">17</span> 件表示中</div>
 <!-- CARD LIST -->
 <div class="card-list">
 <!-- ─── 補助金ラベル ─── -->
 <div class="section-divider" id="divider-subsidy">
 <div class="section-divider-line"></div>
-<div class="section-divider-label sdl-subsidy">補助金 12件</div>
+<div class="section-divider-label sdl-subsidy">補助金 11件</div>
 <div class="section-divider-line"></div>
 </div>
 <!-- ① 省力化投資補助金 -->
