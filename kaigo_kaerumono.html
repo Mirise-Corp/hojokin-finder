@@ -29,8 +29,8 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 22px; flex-shrink: 0;
   }
-  .header h1 { font-size: 17px; font-weight: 700; line-height: 1.3; }
-  .header-sub { font-size: 11px; opacity: 0.9; margin-top: 2px; }
+  .header h1 { font-size: 20px; font-weight: 700; line-height: 1.3; }
+  .header-sub { display: none; font-size: 13px; opacity: 0.9; margin-top: 2px; }
 
   .ind-bar {
     background: white; padding: 10px 12px 8px;
@@ -121,6 +121,14 @@
   }
   .cat-title { font-size: 15px; font-weight: 800; color: #222; line-height: 1.3; }
   .cat-sub   { font-size: 12px; color: #888; margin-top: 1px; }
+  .cat-label {
+    display: inline-block;
+    font-size: 10px; font-weight: 700;
+    background: #444; color: #fff;
+    padding: 1px 6px; border-radius: 5px;
+    margin-right: 5px; vertical-align: middle;
+    letter-spacing: 0.03em;
+  }
 
   .item-grid {
     background: white; margin: 0 12px;
@@ -139,15 +147,15 @@
   .item:hover { border-color: #06C755; background: white; }
   .item[data-hidden="true"] { display: none; }
   .item-visual {
-    text-align: center; font-size: 32px;
+    text-align: center; font-size: 42px;
     margin-bottom: 6px; line-height: 1; height: 38px;
     display: flex; align-items: center; justify-content: center;
   }
   .item-name {
-    font-size: 14px; font-weight: 700; color: #222;
+    font-size: 17px; font-weight: 700; color: #222;
     line-height: 1.3; margin-bottom: 4px; min-height: 32px;
   }
-  .item-desc { font-size: 12px; color: #666; line-height: 1.4; flex: 1; margin-bottom: 6px; }
+  .item-desc { display: none; font-size: 12px; color: #666; line-height: 1.4; flex: 1; margin-bottom: 6px; }
   .item-subs { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 4px; }
   .item-sub-chip { font-size: 10.5px; padding: 2px 6px; border-radius: 8px; font-weight: 700; }
   .item-sub-chip[data-sub="shoryokuka"]   { background: #fff3e8; color: #b85a00; }
@@ -155,7 +163,8 @@
   .item-sub-chip[data-sub="jizokuka"]     { background: #f0faf4; color: #00884a; }
   .item-sub-chip[data-sub="it"]           { background: #eef3ff; color: #2253c7; }
   .item-sub-chip[data-sub="gyomukaizen"]  { background: #f3e8ff; color: #6d28d9; }
-  .item-price { font-size: 11px; color: #00884a; font-weight: 800; text-align: right; }
+  
+  .item-price { font-size: 14px; color: #00884a; font-weight: 800; text-align: right; }
   .item-popular {
     position: absolute; top: 6px; right: 6px;
     font-size: 10px; font-weight: 800;
@@ -253,45 +262,10 @@
   <a class="ind-chip" href="biyou_kaerumono.html">💇 美容業</a>
 </div>
 
-<div class="summary">
-  <div class="summary-lead">
-    介護福祉業では <strong>介護職員の不足・介助負担・介護報酬の改定対応・記録業務の煩雑さ</strong> が大きな課題。
-    介護ロボット・見守りセンサー・介護記録DXなどに、業務改善助成金・働き方改革推進支援助成金・IT導入補助金を活用して<strong>自己負担1/4〜1/3で導入</strong>できます。
-    <br><span style="color:#c0392b;font-weight:700;">💡 申請から発注可能まで約6か月かかります。早めの準備を。</span>
-  </div>
-  <div class="summary-grid">
-    <div class="sm-tile">
-      <div class="sm-tile-label">予算イメージ</div>
-      <div class="sm-tile-value">100万〜500万</div>
-    </div>
-    <div class="sm-tile">
-      <div class="sm-tile-label">補助率</div>
-      <div class="sm-tile-value">2/3 〜 3/4</div>
-    </div>
-  </div>
-  <div class="summary-subsidies-label">使える主な補助金（タップでフィルタ）</div>
-  <div class="summary-subsidies">
-    <span class="sub-chip" data-sub="gyomukaizen" onclick="setFilter('gyomukaizen')">業務改善</span>
-    <span class="sub-chip" data-sub="it"          onclick="setFilter('it')">AI導入</span>
-    <span class="sub-chip" data-sub="shoryokuka"  onclick="setFilter('shoryokuka')">省力化投資</span>
-    <span class="sub-chip" data-sub="monozukuri"  onclick="setFilter('monozukuri')">ものづくり</span>
-    <span class="sub-chip" data-sub="jizokuka"    onclick="setFilter('jizokuka')">小規模持続化</span>
-  </div>
+<!-- ALERT -->
+<div style="margin:12px 12px 0;padding:10px 14px;background:#fff8f8;border-radius:10px;border-left:3px solid #c0392b;font-size:17px;font-weight:700;color:#c0392b;line-height:1.5;">
+  💡 申請から発注可能まで約6か月かかります。早めの準備を。
 </div>
-
-<div class="filter-bar">
-  <div class="filter-label">この補助金で買えるものに絞る</div>
-  <div class="filter-chips">
-    <div class="filter-chip active" data-f="all"          onclick="setFilter('all')">すべて</div>
-    <div class="filter-chip"        data-f="gyomukaizen"  onclick="setFilter('gyomukaizen')">業務改善</div>
-    <div class="filter-chip"        data-f="it"           onclick="setFilter('it')">AI導入</div>
-    <div class="filter-chip"        data-f="shoryokuka"   onclick="setFilter('shoryokuka')">省力化投資</div>
-    <div class="filter-chip"        data-f="monozukuri"   onclick="setFilter('monozukuri')">ものづくり</div>
-    <div class="filter-chip"        data-f="jizokuka"     onclick="setFilter('jizokuka')">持続化</div>
-  </div>
-</div>
-
-<div class="visible-count">現在 <span id="visibleCount">0</span> 件を表示中</div>
 
 <div id="catalog"></div>
 
@@ -436,7 +410,7 @@ function renderCatalog() {
     head.innerHTML = `
       <div class="cat-emoji">${cat.emoji}</div>
       <div>
-        <div class="cat-title">${cat.title}</div>
+        <div class="cat-title"><span class="cat-label">分類</span>${cat.title}</div>
         <div class="cat-sub">${cat.sub}</div>
       </div>`;
     sec.appendChild(head);
@@ -522,3 +496,12 @@ renderCatalog();
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
