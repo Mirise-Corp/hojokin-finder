@@ -1181,9 +1181,11 @@ window.addEventListener('DOMContentLoaded', function() {
     arrow.textContent = '▲';
     toggle.querySelector('span:first-child').textContent = '閉じる';
   }
-  // スクロール
+  // スクロール（スティッキーヘッダー分オフセット）
   setTimeout(function() {
-    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const headerH = document.querySelector('.header') ? document.querySelector('.header').offsetHeight : 0;
+    const top = card.getBoundingClientRect().top + window.pageYOffset - headerH - 8;
+    window.scrollTo({ top: top, behavior: 'smooth' });
   }, 300);
 });
 </script>
