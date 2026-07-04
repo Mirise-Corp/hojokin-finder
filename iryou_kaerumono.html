@@ -138,6 +138,34 @@
     letter-spacing: 0.03em;
   }
 
+  /* ─── Q&Aカード ─── */
+  .tip-card {
+    margin: 8px 12px 0;
+    padding: 11px 14px;
+    background: #fffbea;
+    border: 1px solid #f0d060;
+    border-left: 3px solid #f5a623;
+    border-radius: 10px;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.65;
+  }
+  .tip-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #b87a00;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+  .tip-q {
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  .tip-a {
+    color: #555;
+  }
+
   .item-grid {
     background: white; margin: 0 12px;
     border-radius: 0 0 14px 14px; padding: 10px;
@@ -324,6 +352,7 @@ const CATEGORIES = [
     title: "診療・検査用主力設備",
     sub: "診療品質UP・正確な診断・新メニュー対応",
     emoji: "🩺",
+    tip: { q: "医療法人は省力化投資補助金を申請できますか？", a: "原則として医療法人は対象外です。ただし第7回公募以降は歯科医業を営む医療法人で一定の要件を満たす場合は申請可能となっています。", src: "省力化投資補助金" },
     items: [
       { v:"🩻", name:"超音波画像診断装置(エコー)", desc:"高精細画像で迅速・正確な診断",          price:"100万〜800万", subs:["monozukuri","shoryokuka"], popular:true,
         uc:"心臓・腹部・産科などの診察精度を大幅に向上。最新カラードプラ対応機ならクリニック差別化＋自費診療メニューにも展開可。" },
@@ -347,6 +376,7 @@ const CATEGORIES = [
     title: "省力化・自動化設備（人手不足対応）",
     sub: "自動精算・AI問診・配薬ロボで医療事務省人化",
     emoji: "🤖",
+    tip: { q: "既存設備のリニューアル・更新は補助対象になりますか？", a: "既存設備のリニューアルや改良等の費用は対象外です。新たに購入・製作・借用するものが補助対象となります。", src: "省力化投資補助金" },
     items: [
       { v:"💳", name:"自動精算機(セルフ会計)",      desc:"会計待ち時間を激減・キャッシュレス対応", price:"100万〜400万/台", subs:["shoryokuka","it"], popular:true,
         uc:"会計をセルフ化、医療事務の負担を激減＋待ち時間短縮で患者満足度UP。キャッシュレス・QR決済も標準対応。" },
@@ -370,6 +400,7 @@ const CATEGORIES = [
     title: "ICT・電子カルテ・医療DX",
     sub: "電子カルテ・オンライン診療・PACSで脱紙運用",
     emoji: "💻",
+    tip: { q: "パソコンや汎用性のある機器は補助対象になりますか？", a: "事業用・私用の両方に使用できると判断されるものは対象外です。業務専用と明確に説明できるものは対象となる場合があります。", src: "持続化補助金" },
     items: [
       { v:"📝", name:"電子カルテシステム",          desc:"紙カルテを電子化・即時検索",            price:"月3万〜・初期50万〜500万", subs:["it","monozukuri"], popular:true,
         uc:"紙カルテからの完全脱却、過去の診察履歴を瞬時に参照可能。標準型電子カルテなら情報共有もスムーズ。" },
@@ -389,6 +420,7 @@ const CATEGORIES = [
     title: "感染対策・院内環境設備",
     sub: "院内感染ゼロ・患者の安心感を高める",
     emoji: "🦠",
+    tip: { q: "設備設置に必要な内装工事費は補助対象になりますか？", a: "購入する機械・装置の据付けと一体となる軽微な工事は対象です。ただし設置場所の整備工事・基礎工事は含まれません。", src: "省力化投資補助金" },
     items: [
       { v:"☀️", name:"紫外線除菌器・空気清浄機",    desc:"院内空気の常時除菌で感染リスク低減",    price:"20万〜150万/台", subs:["jizokuka","shoryokuka"],
         uc:"院内空気の常時除菌で院内感染リスクを低減。患者・スタッフの安心感UP＋集患力にも貢献。" },
@@ -404,6 +436,7 @@ const CATEGORIES = [
     title: "高付加価値化・新サービス対応設備",
     sub: "AI画像診断・遠隔モニタリング・自費診療",
     emoji: "🚀",
+    tip: { q: "不採択になった場合、次回の公募で再申請できますか？", a: "次回の公募で再度申請可能です。審査内容についての問い合わせには応じていないため、最新の公募要領を確認して再挑戦することをおすすめします。", src: "持続化補助金" },
     items: [
       { v:"🧠", name:"AI画像診断支援システム",      desc:"AIが画像を解析、見落とし防止",          price:"200万〜1,000万", subs:["it","monozukuri"], popular:true,
         uc:"X線・CT画像をAIが解析、医師の見落としを防止。診断精度UPで医療事故リスク低減＋業務効率化。" },
@@ -455,6 +488,17 @@ function renderCatalog() {
       grid.appendChild(card);
     });
     sec.appendChild(grid);
+    if (cat.tip) {
+      const tipEl = document.createElement('div');
+      tipEl.className = 'tip-card';
+      if (typeof cat.tip === 'object') {
+        const src = cat.tip.src ? `｜${cat.tip.src}` : '';
+        tipEl.innerHTML = `<div class="tip-label">❓ よくある質問${src}</div><div class="tip-q">Q. ${cat.tip.q}</div><div class="tip-a">A. ${cat.tip.a}</div>`;
+      } else {
+        tipEl.innerHTML = `<div class="tip-label">🤔 知ってた？</div>${cat.tip}`;
+      }
+      sec.appendChild(tipEl);
+    }
     root.appendChild(sec);
   });
   applyFilter();

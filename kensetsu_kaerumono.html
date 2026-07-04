@@ -197,6 +197,34 @@
     box-shadow: 0 1px 4px rgba(0,0,0,0.06);
   }
 
+  /* ─── Q&Aカード ─── */
+  .tip-card {
+    margin: 8px 12px 0;
+    padding: 11px 14px;
+    background: #fffbea;
+    border: 1px solid #f0d060;
+    border-left: 3px solid #f5a623;
+    border-radius: 10px;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.65;
+  }
+  .tip-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #b87a00;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+  .tip-q {
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  .tip-a {
+    color: #555;
+  }
+
   /* ─── ITEM CARD ─── */
   .item {
     background: #fafafa;
@@ -480,6 +508,7 @@ const CATEGORIES = [
     title: "施工用主力機械・ICT建機",
     sub: "現場の主役。3D/GPS制御で精度UP・人数削減",
     emoji: "🚜",
+    tip: { q: "交付決定前に発注・購入してしまいました。補助対象になりますか？", a: "対象外です。いかなる理由があっても事前着手は認められません。交付決定通知を受け取った日以降に発注・契約・支払いを行ってください。", src: "省力化投資補助金" },
     items: [
       { v:"🚜", name:"ICT油圧ショベル",          desc:"3Dマシンガイダンスで丁張りなしの精密掘削", price:"800万〜2,500万", subs:["shoryokuka","monozukuri"], popular:true,
         uc:"丁張り作業を削減し、若手オペレーターでもベテラン並みの精度で掘削できます。i-Construction工事の必須設備。" },
@@ -503,6 +532,7 @@ const CATEGORIES = [
     title: "自動化・省力化設備（人手不足対応）",
     sub: "重作業や危険作業をロボット・アシストで",
     emoji: "🦾",
+    tip: { q: "老朽化した機械の買い替えは補助対象になりますか？", a: "現況と同程度の性能への単純な買い替えは対象外です。性能向上・新機能追加など販路開拓につながる理由が必要です。", src: "持続化補助金" },
     items: [
       { v:"🛻", name:"無人搬送車(AGV・AMR)",      desc:"工場・ヤード内の資材搬送を無人化",  price:"300万〜1,500万", subs:["shoryokuka","monozukuri"],
         uc:"プレキャスト工場や大規模ヤードで資材運びの人員をゼロに。24時間稼働可能。" },
@@ -534,6 +564,7 @@ const CATEGORIES = [
     title: "測量・現場把握機器",
     sub: "ドローン・3D測量で工期短縮・出来形管理",
     emoji: "📡",
+    tip: { q: "省力化投資補助金の補助上限額と補助率を教えてください。", a: "従業員5名以下：750万円（賃上げ特例1,000万円）、6〜20名：1,500万円（2,000万円）、21〜50名：3,000万円（4,000万円）。補助率は中小企業1/2、小規模事業者・再生事業者2/3です。", src: "省力化投資補助金" },
     items: [
       { v:"📐", name:"地上型3Dレーザースキャナー", desc:"高精度3Dデータで現場をデジタル化",  price:"400万〜1,200万", subs:["monozukuri","shineigi"],
         uc:"現場全体を数分でスキャン。出来形管理・差分検証・履歴記録に活用。" },
@@ -553,6 +584,7 @@ const CATEGORIES = [
     title: "ICT・施工管理・安全・資材のDXシステム",
     sub: "現場と本社をつなぐクラウド・ペーパーレス（施工管理／安全／資材）",
     emoji: "💻",
+    tip: { q: "ホームページ制作費は補助対象ですか？", a: "販路開拓を目的としたものであれば対象です。ただし「ウェブサイト関連費」は補助金交付申請額の1/4・最大50万円が上限で、ウェブサイト費のみでの申請はできません。", src: "持続化補助金" },
     items: [
       { v:"☁️", name:"クラウド施工管理システム",   desc:"現場情報をクラウドで一元管理",     price:"月3万〜・初期20万〜100万", subs:["it","jizokuka"], popular:true,
         uc:"複数現場の進捗・原価・写真をスマホで即確認。月次会議用の資料作成も不要に。" },
@@ -572,6 +604,7 @@ const CATEGORIES = [
     title: "解体・破砕・環境対策設備",
     sub: "解体業の主力機械と粉じん・近隣対策（NEW）",
     emoji: "🏚️",
+    tip: { q: "他の補助金と重複して申請できますか？", a: "同一の補助対象経費に対して複数の国庫補助金を重複受給することはできません。複数の補助金に採択された場合は、いずれか1つを選んで交付申請する必要があります。", src: "省力化投資補助金" },
     items: [
       { v:"🦏", name:"ロングアームバックホウ(13〜30m級)", desc:"上部解体の足場・人員 大幅減",    price:"2,500万〜8,000万", subs:["monozukuri","shineigi","shoryokuka"],
         uc:"中高層建物の上部解体を、足場を組まずにロングアームで実施可能。手バラシ・人力解体に頼っていた工程を機械化し、安全性と工期を同時に改善。" },
@@ -623,6 +656,17 @@ function renderCatalog() {
       grid.appendChild(card);
     });
     sec.appendChild(grid);
+    if (cat.tip) {
+      const tipEl = document.createElement('div');
+      tipEl.className = 'tip-card';
+      if (typeof cat.tip === 'object') {
+        const src = cat.tip.src ? `｜${cat.tip.src}` : '';
+        tipEl.innerHTML = `<div class="tip-label">❓ よくある質問${src}</div><div class="tip-q">Q. ${cat.tip.q}</div><div class="tip-a">A. ${cat.tip.a}</div>`;
+      } else {
+        tipEl.innerHTML = `<div class="tip-label">🤔 知ってた？</div>${cat.tip}`;
+      }
+      sec.appendChild(tipEl);
+    }
     root.appendChild(sec);
   });
   applyFilter();
