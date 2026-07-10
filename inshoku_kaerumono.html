@@ -149,6 +149,34 @@
     letter-spacing: 0.03em;
   }
 
+  /* ─── Q&Aカード ─── */
+  .tip-card {
+    margin: 8px 12px 0;
+    padding: 11px 14px;
+    background: #fffbea;
+    border: 1px solid #f0d060;
+    border-left: 3px solid #f5a623;
+    border-radius: 10px;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.65;
+  }
+  .tip-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #b87a00;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+  .tip-q {
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  .tip-a {
+    color: #555;
+  }
+
   .item-grid {
     background: white;
     margin: 0 12px;
@@ -364,6 +392,7 @@ const CATEGORIES = [
     title: "調理用主力設備（生産性・品質向上）",
     sub: "1台で多工程・新人でも一定品質に",
     emoji: "🍳",
+    tip: { q: "交付決定前に発注・購入してしまいました。補助対象になりますか？", a: "対象外です。いかなる理由があっても事前着手は認められません。交付決定通知を受け取った日以降に発注・契約・支払いを行ってください。", src: "省力化投資補助金" },
     items: [
       { v:"♨️", name:"スチームコンベクションオーブン", desc:"焼・蒸・茹を1台で・誰でも同じ品質", price:"80万〜400万", subs:["jizokuka","monozukuri","shoryokuka"], popular:true,
         uc:"焼く・蒸す・茹でる・煮込みまで1台で完結。プログラム保存で誰でも同じ品質に仕上がり、新人教育コストを大幅削減。" },
@@ -387,6 +416,7 @@ const CATEGORIES = [
     title: "省力化・自動化設備（人手不足対応）",
     sub: "配膳ロボ・食洗機で1人分の人件費を削減",
     emoji: "🤖",
+    tip: { q: "老朽化した機械の買い替えは補助対象になりますか？", a: "現況と同程度の性能への単純な買い替えは対象外です。性能向上・新機能追加など販路開拓につながる理由が必要です。", src: "持続化補助金" },
     items: [
       { v:"👨‍🍳", name:"調理支援ロボット",            desc:"盛付・トッピングを自動化",        price:"200万〜800万", subs:["shoryokuka","monozukuri"], popular:true,
         uc:"盛付・トッピング作業を自動化。提供スピードと盛付品質を均一化し、ホール業務に集中できる体制に。" },
@@ -410,6 +440,7 @@ const CATEGORIES = [
     title: "冷蔵・冷凍・保管設備",
     sub: "鮮度維持・食品ロス削減・HACCP対応",
     emoji: "❄️",
+    tip: { q: "既存設備のリニューアル・更新は補助対象になりますか？", a: "既存設備のリニューアルや改良等の費用は対象外です。新たに購入・製作・借用するものが補助対象となります。", src: "省力化投資補助金" },
     items: [
       { v:"🧊", name:"業務用冷蔵庫",                desc:"省エネ・大容量モデル",            price:"30万〜150万", subs:["jizokuka","shoryokuka"],
         uc:"インバータ式の省エネ冷蔵庫で電気代を大幅削減。庫内温度の安定性も高く、食品ロスを減らせる。" },
@@ -433,6 +464,7 @@ const CATEGORIES = [
     title: "ICT・店舗管理・DX設備",
     sub: "POS・モバイルオーダーで売上UP・接客省人化",
     emoji: "💻",
+    tip: { q: "ホームページ制作費は補助対象ですか？", a: "販路開拓を目的としたものであれば対象です。ただし「ウェブサイト関連費」は補助金交付申請額の1/4・最大50万円が上限で、ウェブサイト費のみでの申請はできません。", src: "持続化補助金" },
     items: [
       { v:"🧾", name:"POSレジシステム",             desc:"会計・売上分析を一元化",          price:"月1万〜・初期10万〜100万", subs:["it","jizokuka"], popular:true,
         uc:"タブレットPOSで会計・売上分析・在庫連携を一元化。経理処理が自動化され、税理士事務所との連携もスムーズ。" },
@@ -456,6 +488,7 @@ const CATEGORIES = [
     title: "衛生管理・安全・品質管理設備",
     sub: "HACCP対応・タッチレス化で衛生レベルUP",
     emoji: "🦠",
+    tip: { q: "設備設置に必要な内装工事費は補助対象になりますか？", a: "購入する機械・装置の据付けと一体となる軽微な工事は対象です。ただし設置場所の整備工事・基礎工事は含まれません。", src: "省力化投資補助金" },
     items: [
       { v:"✅", name:"HACCP対応衛生管理システム",   desc:"衛生記録の電子化・自動アラート",  price:"月1万〜・初期30万〜150万", subs:["it","jizokuka"],
         uc:"衛生記録を電子化、紙帳簿の手書き作業を完全廃止。保健所監査・HACCP対応の根拠データも自動化。" },
@@ -475,6 +508,7 @@ const CATEGORIES = [
     title: "テイクアウト・新業態・高付加価値化設備",
     sub: "店舗外売上・冷凍販売・多店舗展開へ",
     emoji: "🛍️",
+    tip: { q: "同じ事業者が複数件申請できますか？", a: "同一事業者は1件のみ申請可能です。同一事業者による複数申請・重複申請は認められていません。", src: "持続化補助金" },
     items: [
       { v:"🥡", name:"テイクアウト専用ショーケース", desc:"テイクアウト商品の陳列・販売",    price:"20万〜150万", subs:["jizokuka","shoryokuka"],
         uc:"テイクアウト商品の陳列で衝動買いを誘発。客単価UPとデリバリーアプリ依存からの脱却に。" },
@@ -537,6 +571,17 @@ function renderCatalog() {
       grid.appendChild(card);
     });
     sec.appendChild(grid);
+    if (cat.tip) {
+      const tipEl = document.createElement('div');
+      tipEl.className = 'tip-card';
+      if (typeof cat.tip === 'object') {
+        const src = cat.tip.src ? `｜${cat.tip.src}` : '';
+        tipEl.innerHTML = `<div class="tip-label">❓ よくある質問${src}</div><div class="tip-q">Q. ${cat.tip.q}</div><div class="tip-a">A. ${cat.tip.a}</div>`;
+      } else {
+        tipEl.innerHTML = `<div class="tip-label">🤔 知ってた？</div>${cat.tip}`;
+      }
+      sec.appendChild(tipEl);
+    }
     root.appendChild(sec);
   });
   applyFilter();

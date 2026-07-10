@@ -130,6 +130,34 @@
     letter-spacing: 0.03em;
   }
 
+  /* ─── Q&Aカード ─── */
+  .tip-card {
+    margin: 8px 12px 0;
+    padding: 11px 14px;
+    background: #fffbea;
+    border: 1px solid #f0d060;
+    border-left: 3px solid #f5a623;
+    border-radius: 10px;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.65;
+  }
+  .tip-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #b87a00;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+  .tip-q {
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  .tip-a {
+    color: #555;
+  }
+
   .item-grid {
     background: white; margin: 0 12px;
     border-radius: 0 0 14px 14px; padding: 10px;
@@ -316,6 +344,7 @@ const CATEGORIES = [
     title: "介護・支援用主力設備（サービス品質向上）",
     sub: "介護負担を物理的に軽減する主力機器",
     emoji: "🛏️",
+    tip: { q: "交付決定前に発注・購入してしまいました。補助対象になりますか？", a: "対象外です。いかなる理由があっても事前着手は認められません。交付決定通知を受け取った日以降に発注・契約・支払いを行ってください。", src: "省力化投資補助金" },
     items: [
       { v:"🛏️", name:"電動介護ベッド",              desc:"起き上がり・足上げを電動制御",          price:"15万〜50万/台", subs:["gyomukaizen","shoryokuka"], popular:true,
         uc:"高さ・足上げ・背上げを電動で制御。利用者の快適性UP＋介助者の腰痛・労災リスクを大幅に削減。" },
@@ -339,6 +368,7 @@ const CATEGORIES = [
     title: "省力化・自動化設備（人手不足対応）",
     sub: "介護ロボ・見守りセンサー・自動排泄通知",
     emoji: "🤖",
+    tip: { q: "老朽化した機械の買い替えは補助対象になりますか？", a: "現況と同程度の性能への単純な買い替えは対象外です。性能向上・新機能追加など販路開拓につながる理由が必要です。", src: "持続化補助金" },
     items: [
       { v:"🤖", name:"介護ロボット(移乗・見守り)",   desc:"移乗・夜間見守りを24時間支援",          price:"100万〜500万/台", subs:["shoryokuka","monozukuri"], popular:true,
         uc:"移乗・夜間見守り作業を24時間ロボットが支援。介護職員の負担を激減し、夜勤シフトの確保も容易に。" },
@@ -362,6 +392,7 @@ const CATEGORIES = [
     title: "ICT・介護記録・業務DX設備",
     sub: "介護記録・LIFE対応・レセプトの電子化",
     emoji: "💻",
+    tip: { q: "パソコンや汎用性のある機器は補助対象になりますか？", a: "事業用・私用の両方に使用できると判断されるものは対象外です。業務専用と明確に説明できるものは対象となる場合があります。", src: "持続化補助金" },
     items: [
       { v:"📋", name:"介護記録システム",            desc:"タブレットで記録を即時電子化",          price:"月1万〜・初期30万〜150万", subs:["it","gyomukaizen"], popular:true,
         uc:"タブレットで記録、紙への二重記入を撲滅。情報共有がスムーズで、職員間の引継ぎミスも激減。" },
@@ -381,6 +412,7 @@ const CATEGORIES = [
     title: "高付加価値化・新サービス対応設備",
     sub: "認知症ケア・自立支援・遠隔医療連携",
     emoji: "🚀",
+    tip: { q: "補助金で購入した設備を後で売却してもよいですか？", a: "50万円以上の設備は売却制限があります。補助事業期間中に売却する場合は事前に事務局の承認を得ることが必須です。", src: "持続化補助金" },
     items: [
       { v:"🦾", name:"自立支援型介護ロボット",       desc:"利用者の動作を補助、自立を促進",        price:"100万〜500万/台", subs:["shoryokuka","monozukuri"], popular:true,
         uc:"歩行・立ち上がり等の動作を補助し、利用者の自立を促進。要介護度の改善で介護報酬の加算獲得にも。" },
@@ -432,6 +464,17 @@ function renderCatalog() {
       grid.appendChild(card);
     });
     sec.appendChild(grid);
+    if (cat.tip) {
+      const tipEl = document.createElement('div');
+      tipEl.className = 'tip-card';
+      if (typeof cat.tip === 'object') {
+        const src = cat.tip.src ? `｜${cat.tip.src}` : '';
+        tipEl.innerHTML = `<div class="tip-label">❓ よくある質問${src}</div><div class="tip-q">Q. ${cat.tip.q}</div><div class="tip-a">A. ${cat.tip.a}</div>`;
+      } else {
+        tipEl.innerHTML = `<div class="tip-label">🤔 知ってた？</div>${cat.tip}`;
+      }
+      sec.appendChild(tipEl);
+    }
     root.appendChild(sec);
   });
   applyFilter();

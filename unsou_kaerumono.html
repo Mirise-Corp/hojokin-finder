@@ -149,6 +149,34 @@
     letter-spacing: 0.03em;
   }
 
+  /* ─── Q&Aカード ─── */
+  .tip-card {
+    margin: 8px 12px 0;
+    padding: 11px 14px;
+    background: #fffbea;
+    border: 1px solid #f0d060;
+    border-left: 3px solid #f5a623;
+    border-radius: 10px;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.65;
+  }
+  .tip-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #b87a00;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+  .tip-q {
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  .tip-a {
+    color: #555;
+  }
+
   .item-grid {
     background: white;
     margin: 0 12px;
@@ -364,6 +392,7 @@ const CATEGORIES = [
     title: "自動化・省力化設備（荷役・構内作業）",
     sub: "AGV・AGF・荷役ロボで荷待ち削減",
     emoji: "🦾",
+    tip: { q: "交付決定前に発注・購入してしまいました。補助対象になりますか？", a: "対象外です。いかなる理由があっても事前着手は認められません。交付決定通知を受け取った日以降に発注・契約・支払いを行ってください。", src: "省力化投資補助金" },
     items: [
       { v:"📤", name:"自動荷積み・荷下ろし装置",   desc:"トラックへの荷役を自動化、待機時間ゼロへ", price:"500万〜2,500万", subs:["shoryokuka","monozukuri"], popular:true,
         uc:"トラックの荷積み・荷下ろしを自動化し、ドライバーの荷役待ちを激減。2024年問題対策の本命設備で、荷主への提案力にもなる。" },
@@ -387,6 +416,7 @@ const CATEGORIES = [
     title: "倉庫・保管・物流拠点設備",
     sub: "自動倉庫・DPS・温度管理で在庫精度UP",
     emoji: "🏬",
+    tip: { q: "既存設備のリニューアル・更新は補助対象になりますか？", a: "既存設備のリニューアルや改良等の費用は対象外です。新たに購入・製作・借用するものが補助対象となります。", src: "省力化投資補助金" },
     items: [
       { v:"🏬", name:"自動倉庫システム",            desc:"入出庫を完全自動化・棚卸も激減",          price:"2,000万〜1億円", subs:["shoryokuka","monozukuri"], popular:true,
         uc:"高層ラックに自動で格納・取出し。土地面積を1/3にしつつ、夜間無人稼働でリードタイム短縮。棚卸作業もボタン1つで完了。" },
@@ -410,6 +440,7 @@ const CATEGORIES = [
     title: "ICT・運行管理・DX設備",
     sub: "配車・運行・原価のDXで2024年問題対応",
     emoji: "💻",
+    tip: { q: "ホームページ制作費は補助対象ですか？", a: "販路開拓を目的としたものであれば対象です。ただし「ウェブサイト関連費」は補助金交付申請額の1/4・最大50万円が上限で、ウェブサイト費のみでの申請はできません。", src: "持続化補助金" },
     items: [
       { v:"🗺️", name:"運行管理システム(配車+ルート最適化)", desc:"AIで最短ルート・最適配車を自動",     price:"月3万〜・初期100万〜500万", subs:["it","monozukuri"], popular:true,
         uc:"AIが受注・車両・ドライバーの稼働を考慮して最適配車を自動立案。配車担当者の負担を激減し、空荷時間も大幅削減。" },
@@ -433,6 +464,7 @@ const CATEGORIES = [
     title: "荷役・積載・包装関連設備",
     sub: "包装・積載効率化で1台あたり売上UP",
     emoji: "📦",
+    tip: { q: "車両（自動車・バイク・自転車）は補助対象になりますか？", a: "自動車・オートバイ・自転車は対象外です。キッチンカーなどの車両本体も同様に非対象で、改装部分のみが「委託・外注費」として対象となります。", src: "持続化補助金" },
     items: [
       { v:"🎁", name:"自動ラップ包装機",            desc:"パレット梱包を自動化・短時間化",          price:"100万〜500万", subs:["shoryokuka","jizokuka"],
         uc:"パレット荷物のラップ包装を1分で完了。手作業で5分かかっていた工程を激減し、出荷ピーク時の人員不足を解消。" },
@@ -456,6 +488,7 @@ const CATEGORIES = [
     title: "高付加価値化・新分野対応設備",
     sub: "コールドチェーン・EC物流・自動配送で新市場参入",
     emoji: "🚀",
+    tip: { q: "過去に採択された事業者も申請できますか？", a: "可能です。ただし現在申請中・交付申請中、または補助金支払いが未完了の事業者は対象外となります。", src: "省力化投資補助金" },
     items: [
       { v:"❄️", name:"コールドチェーン対応設備一式", desc:"冷蔵・冷凍輸送で高単価業務に参入",        price:"1,000万〜5,000万", subs:["monozukuri","shoryokuka"],
         uc:"冷蔵・冷凍車両＋温度管理クラウド＋温度ロガーを一式導入。常温物流から脱却し、高単価のチルド・冷凍物流市場に参入。" },
@@ -514,6 +547,17 @@ function renderCatalog() {
       grid.appendChild(card);
     });
     sec.appendChild(grid);
+    if (cat.tip) {
+      const tipEl = document.createElement('div');
+      tipEl.className = 'tip-card';
+      if (typeof cat.tip === 'object') {
+        const src = cat.tip.src ? `｜${cat.tip.src}` : '';
+        tipEl.innerHTML = `<div class="tip-label">❓ よくある質問${src}</div><div class="tip-q">Q. ${cat.tip.q}</div><div class="tip-a">A. ${cat.tip.a}</div>`;
+      } else {
+        tipEl.innerHTML = `<div class="tip-label">🤔 知ってた？</div>${cat.tip}`;
+      }
+      sec.appendChild(tipEl);
+    }
     root.appendChild(sec);
   });
   applyFilter();

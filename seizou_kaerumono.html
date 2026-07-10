@@ -171,6 +171,34 @@
     letter-spacing: 0.03em;
   }
 
+  /* ─── Q&Aカード ─── */
+  .tip-card {
+    margin: 8px 12px 0;
+    padding: 11px 14px;
+    background: #fffbea;
+    border: 1px solid #f0d060;
+    border-left: 3px solid #f5a623;
+    border-radius: 10px;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.65;
+  }
+  .tip-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #b87a00;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+  .tip-q {
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  .tip-a {
+    color: #555;
+  }
+
   .item-grid {
     background: white;
     margin: 0 12px;
@@ -408,6 +436,7 @@ const CATEGORIES = [
     title: "生産設備・加工機械（主力設備）",
     sub: "工場の主役。NC・複合化で多品種少量に対応",
     emoji: "🏭",
+    tip: { q: "交付決定前に発注・購入してしまいました。補助対象になりますか？", a: "対象外です。いかなる理由があっても事前着手は認められません。交付決定通知を受け取った日以降に発注・契約・支払いを行ってください。", src: "省力化投資補助金" },
     items: [
       { v:"⚙️", name:"NC旋盤",                    desc:"円筒形状ワークを高精度切削、夜間無人運転も",   price:"300万〜1,500万", subs:["shoryokuka","monozukuri"], popular:true,
         uc:"汎用旋盤の手動操作からプログラム加工に転換。熟練オペレーター1名で複数機を運用でき、夜間無人運転で生産性が2倍に。" },
@@ -431,6 +460,7 @@ const CATEGORIES = [
     title: "自動化・省力化・物流搬送設備（人手不足対応）",
     sub: "ロボット・AGV・自動搬送で人員を半減",
     emoji: "🦾",
+    tip: { q: "老朽化した機械の買い替えは補助対象になりますか？", a: "現況と同程度の性能への単純な買い替えは対象外です。性能向上・新機能追加など販路開拓につながる理由が必要です。", src: "持続化補助金" },
     items: [
       { v:"🦾", name:"産業用ロボット(搬送・組立)",   desc:"24時間休まず稼働、3直の省人化",            price:"500万〜2,000万", subs:["shoryokuka","monozukuri"], popular:true,
         uc:"溶接・組立・搬送を24時間休まず実施。3直シフトの省人化に加え、品質も人手より安定。投資回収は2〜3年が一般的。" },
@@ -466,6 +496,7 @@ const CATEGORIES = [
     title: "検査・測定・品質管理設備",
     sub: "AI画像検査・三次元測定で全数検査を実現",
     emoji: "🔬",
+    tip: { q: "既存設備のリニューアル・更新は補助対象になりますか？", a: "既存設備のリニューアルや改良等の費用は対象外です。新たに購入・製作・借用するものが補助対象となります。", src: "省力化投資補助金" },
     items: [
       { v:"📐", name:"三次元測定機",                desc:"複雑形状ワークを高精度測定",                price:"500万〜2,500万", subs:["monozukuri","shoryokuka"],
         uc:"熟練検査員1日かけていた測定が30分に。図面と現物の照合を高精度に自動化し、品質保証部の負荷激減。" },
@@ -489,6 +520,7 @@ const CATEGORIES = [
     title: "ICT・生産管理・DX設備",
     sub: "MES・IoT・AIで現場と経営をつなぐ",
     emoji: "💻",
+    tip: { q: "パソコンや汎用性のある機器は補助対象になりますか？", a: "事業用・私用の両方に使用できると判断されるものは対象外です。業務専用と明確に説明できるものは対象となる場合があります。", src: "持続化補助金" },
     items: [
       { v:"💻", name:"生産管理システム(MES)",       desc:"工程・品質・設備をリアルタイム把握",        price:"月3万〜・初期100万〜500万", subs:["it","monozukuri"], popular:true,
         uc:"現場の進捗・品質・設備稼働をリアルタイム可視化。ボトルネック工程を即特定し、改善サイクルを高速化。" },
@@ -512,6 +544,7 @@ const CATEGORIES = [
     title: "周辺設備・工程改善設備",
     sub: "洗浄・バリ取り・熱処理など工程の自動化",
     emoji: "⚙️",
+    tip: { q: "中古品を購入する場合の注意点を教えてください。", a: "2者以上の中古品販売業者から見積書を取得することが必須です。個人（開業していない人）からの購入は対象外となります。", src: "持続化補助金" },
     items: [
       { v:"🚿", name:"自動洗浄機",                  desc:"脱脂・洗浄を自動化、薬品被ばく排除",        price:"200万〜1,000万", subs:["shoryokuka","monozukuri"],
         uc:"洗浄を自動化し、手作業の腰痛・薬品被ばくリスクを排除。サイクルタイムも安定化。" },
@@ -531,6 +564,7 @@ const CATEGORIES = [
     title: "試作・研究・高付加価値化設備",
     sub: "3Dプリンタ・CAE・CAD/CAMで新製品開発",
     emoji: "🧪",
+    tip: { q: "複数種類の設備をまとめて1回の申請で対象にできますか？", a: "可能です。ただし補助上限額を超えた分は補助されません。また、他の補助金と同一の補助対象経費が重複する場合は対象外となります。", src: "省力化投資補助金" },
     items: [
       { v:"🖨️", name:"金属3Dプリンター",            desc:"金属粉末で複雑形状を造形",                  price:"1,000万〜5,000万", subs:["monozukuri"],
         uc:"従来工法では作れない複雑形状を造形可能。試作リードタイム1/3、新規受注のチャンス拡大。" },
@@ -585,6 +619,17 @@ function renderCatalog() {
       grid.appendChild(card);
     });
     sec.appendChild(grid);
+    if (cat.tip) {
+      const tipEl = document.createElement('div');
+      tipEl.className = 'tip-card';
+      if (typeof cat.tip === 'object') {
+        const src = cat.tip.src ? `｜${cat.tip.src}` : '';
+        tipEl.innerHTML = `<div class="tip-label">❓ よくある質問${src}</div><div class="tip-q">Q. ${cat.tip.q}</div><div class="tip-a">A. ${cat.tip.a}</div>`;
+      } else {
+        tipEl.innerHTML = `<div class="tip-label">🤔 知ってた？</div>${cat.tip}`;
+      }
+      sec.appendChild(tipEl);
+    }
     root.appendChild(sec);
   });
   applyFilter();

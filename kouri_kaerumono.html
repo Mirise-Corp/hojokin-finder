@@ -130,6 +130,34 @@
     letter-spacing: 0.03em;
   }
 
+  /* ─── Q&Aカード ─── */
+  .tip-card {
+    margin: 8px 12px 0;
+    padding: 11px 14px;
+    background: #fffbea;
+    border: 1px solid #f0d060;
+    border-left: 3px solid #f5a623;
+    border-radius: 10px;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.65;
+  }
+  .tip-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #b87a00;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+  .tip-q {
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  .tip-a {
+    color: #555;
+  }
+
   .item-grid {
     background: white; margin: 0 12px;
     border-radius: 0 0 14px 14px; padding: 10px;
@@ -316,6 +344,7 @@ const CATEGORIES = [
     title: "店舗運営・販売用主力設備",
     sub: "POS・セルフレジ・電子棚札で売場DX",
     emoji: "🛒",
+    tip: { q: "交付決定前に発注・購入してしまいました。補助対象になりますか？", a: "対象外です。いかなる理由があっても事前着手は認められません。交付決定通知を受け取った日以降に発注・契約・支払いを行ってください。", src: "省力化投資補助金" },
     items: [
       { v:"🧾", name:"POSレジシステム",             desc:"会計・売上・顧客データを一元化",        price:"月1万〜・初期20万〜100万", subs:["it","jizokuka"], popular:true,
         uc:"タブレットPOSで会計・売上分析・在庫連携を一元化。キャッシュレス対応も標準化され、税理士事務所との経理連携もスムーズ。" },
@@ -335,6 +364,7 @@ const CATEGORIES = [
     title: "省力化・自動化設備（人手不足対応）",
     sub: "無人レジ・清掃ロボ・棚卸ロボで省人化",
     emoji: "🤖",
+    tip: { q: "老朽化した機械の買い替えは補助対象になりますか？", a: "現況と同程度の性能への単純な買い替えは対象外です。性能向上・新機能追加など販路開拓につながる理由が必要です。", src: "持続化補助金" },
     items: [
       { v:"🚪", name:"無人レジシステム",            desc:"顔認証・画像で完全無人会計",            price:"200万〜800万", subs:["shoryokuka","it"], popular:true,
         uc:"Amazon Go式の完全無人会計。商品を持って店を出るだけで決済が完了し、スタッフゼロ運営も可能。" },
@@ -358,6 +388,7 @@ const CATEGORIES = [
     title: "在庫管理・バックヤード設備",
     sub: "RFID・自動発注で在庫精度99%超へ",
     emoji: "📦",
+    tip: { q: "複数種類の設備をまとめて1回の申請で対象にできますか？", a: "可能です。ただし補助上限額を超えた分は補助されません。また、他の補助金と同一の補助対象経費が重複する場合は対象外となります。", src: "省力化投資補助金" },
     items: [
       { v:"📋", name:"在庫管理システム",            desc:"在庫数を即時把握、欠品防止",            price:"月1万〜・初期20万〜100万", subs:["it","jizokuka"],
         uc:"商品ごとの在庫数を即時把握。欠品防止と過剰在庫削減で機会損失と廃棄ロスを同時に削減。" },
@@ -373,6 +404,7 @@ const CATEGORIES = [
     title: "ICT・店舗管理・DX設備",
     sub: "BI・CRM・会員アプリで顧客LTV最大化",
     emoji: "💻",
+    tip: { q: "パソコンや汎用性のある機器は補助対象になりますか？", a: "事業用・私用の両方に使用できると判断されるものは対象外です。業務専用と明確に説明できるものは対象となる場合があります。", src: "持続化補助金" },
     items: [
       { v:"📊", name:"売上分析・BIツール",          desc:"時間帯・商品別の売上を可視化",          price:"月3万〜・初期30万〜200万", subs:["it","jizokuka"], popular:true,
         uc:"時間帯・商品別・客層別の売上を可視化、利益率の高い商品戦略を立てやすい。税理士事務所との経営会議に直結。" },
@@ -392,6 +424,7 @@ const CATEGORIES = [
     title: "EC・オムニチャネル・物流対応設備",
     sub: "EC構築・店舗受取・ピッキング自動化",
     emoji: "🛍️",
+    tip: { q: "車両（自動車・バイク・自転車）は補助対象になりますか？", a: "自動車・オートバイ・自転車は対象外です。キッチンカーなどの車両本体も同様に非対象で、改装部分のみが「委託・外注費」として対象となります。", src: "持続化補助金" },
     items: [
       { v:"🛒", name:"ECサイト構築システム",        desc:"自社ECで販路拡大",                      price:"月3万〜・初期50万〜500万", subs:["it","monozukuri"],
         uc:"自社ECサイトを構築、店舗依存からの脱却。販路拡大＋粗利率改善で新収益源化。" },
@@ -411,6 +444,7 @@ const CATEGORIES = [
     title: "高付加価値化・新業態対応設備",
     sub: "無人店舗・AR/VR・パーソナライズAIで差別化",
     emoji: "🚀",
+    tip: { q: "過去に持続化補助金に採択されたことがあります。再度申請できますか？", a: "異なる事業であれば申請可能です。ただし前回の様式14（事業効果報告書）の提出状況を事前に確認しておいてください。", src: "持続化補助金" },
     items: [
       { v:"🏬", name:"無人店舗システム",            desc:"24時間スタッフゼロ運営",                price:"300万〜2,000万", subs:["shoryokuka","monozukuri"], popular:true,
         uc:"顔認証・センサー・電子決済で完全無人運営。深夜・郊外への出店も人件費ゼロで可能に。" },
@@ -462,6 +496,17 @@ function renderCatalog() {
       grid.appendChild(card);
     });
     sec.appendChild(grid);
+    if (cat.tip) {
+      const tipEl = document.createElement('div');
+      tipEl.className = 'tip-card';
+      if (typeof cat.tip === 'object') {
+        const src = cat.tip.src ? `｜${cat.tip.src}` : '';
+        tipEl.innerHTML = `<div class="tip-label">❓ よくある質問${src}</div><div class="tip-q">Q. ${cat.tip.q}</div><div class="tip-a">A. ${cat.tip.a}</div>`;
+      } else {
+        tipEl.innerHTML = `<div class="tip-label">🤔 知ってた？</div>${cat.tip}`;
+      }
+      sec.appendChild(tipEl);
+    }
     root.appendChild(sec);
   });
   applyFilter();
