@@ -645,6 +645,15 @@ https://hojokin-finder.pages.dev#agefriendly
 
 **完成版リファレンス**: `kensetsu_kaerumono.html`（建設業・解体業版）。
 
+### 管理フォルダ（2026-07-29 一本化）
+
+**kaerumonoページ群は、このフォルダ（`ミライズ_LINEモックアップ`）で管理・更新する。**
+
+- 旧フォルダ `ミライズ_LINE買えるものリスト` は **`ミライズ_LINE買えるものリスト_旧_統合済み`** にリネーム済み。**編集しない・参照しない**。
+- 統合時に全ファイルを照合済み。kaerumono系9ファイルは両フォルダで内容一致、旧フォルダ側の `index.html`・`CLAUDE.md` は古い版だったため取り込み不要と判断。
+- 旧フォルダにのみ存在した `shoryokuka_kaerumono.html` は、`kensetsu_kaerumono.html` の前身（どこからもリンクされていない旧版）のため取り込まない（本リポジトリでもコミット `8697f0c` で削除済み）。
+- Git管理・Cloudflare Pagesへのデプロイもこのフォルダからのみ行う。
+
 ### ファイル一覧
 - `kaerumono_index.html` ← トップページ（業種選択画面）
 - `kensetsu_kaerumono.html` ← マスター参考ファイル（建設業・解体業）
