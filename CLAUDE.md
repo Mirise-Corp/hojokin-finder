@@ -14,32 +14,63 @@
 ### GitHub・公開
 | 項目 | 内容 |
 |---|---|
-| GitHubアカウント | mato6627-cpu |
-| GitHubリポジトリ | https://github.com/mato6627-cpu/- |
+| GitHubアカウント | mato6627-cpu（Mirise-Corp Organization のメンバー） |
+| GitHubリポジトリ | https://github.com/Mirise-Corp/hojokin-finder |
 | 公開URL | https://hojokin-finder.pages.dev |
 | デプロイ | GitHub push → Cloudflare Pages 自動反映（1〜2分） |
 
 **共有するURLは必ず `https://hojokin-finder.pages.dev`（固定URL）を使うこと。**
 
 ### Git操作
+
+**認証方式：Git Credential Manager（Windows資格情報マネージャー）**
+リモートURLにトークンを埋め込まない。認証情報はGCMがWindowsに保存するため、初回の1回だけブラウザ／PAT入力で認証すれば以降は自動。
+
+#### 現行設定
+| 項目 | 値 |
+|---|---|
+| remote origin | `https://github.com/Mirise-Corp/hojokin-finder.git` |
+| ブランチ | `main` |
+| credential.helper | `manager` |
+| user.name | `mato6627-cpu` |
+| user.email | `mato6627@gmail.com` |
+
+#### 通常のアップロード
 ```bash
-# 初回セットアップ（新PCの場合）
+git add index.html
+git commit -m "変更内容の説明"
+git push origin main
+```
+
+#### pushが弾かれた場合
+```bash
+git pull origin main --no-rebase
+git push origin main
+```
+
+#### 初回セットアップ（新PCの場合）
+```bash
 git init
-git remote add origin https://mato6627-cpu:[トークン]@github.com/mato6627-cpu/-
+git remote add origin https://github.com/Mirise-Corp/hojokin-finder.git
+git config credential.helper manager
 git config user.name "mato6627-cpu"
 git config user.email "mato6627@gmail.com"
 git branch -M main
 git fetch origin
 git merge origin/main --allow-unrelated-histories -X ours -m "Initial setup"
+```
+初回 `git push` 時にGCMの認証ダイアログが出る → GitHubアカウント（mato6627-cpu）でサインインすれば以降は不要。
 
-# 通常のアップロード
-git add index.html
-git commit -m "変更内容の説明"
-git push origin main
+#### 認証がおかしくなった時
+古いトークン付きURLや期限切れの資格情報が残っていると push が401で弾かれる。
+```bash
+# remoteURLにトークンが埋まっていないか確認（埋まっていたら貼り替える）
+git remote -v
+git remote set-url origin https://github.com/Mirise-Corp/hojokin-finder.git
 
-# pushが弾かれた場合
-git pull origin main --no-rebase
-git push origin main
+# 保存済み資格情報を削除して認証をやり直す
+# → Windows「資格情報マネージャー」→「Windows 資格情報」→
+#    git:https://github.com の項目を削除 → 次回pushで再認証
 ```
 
 ### Claude起動ショートカット
