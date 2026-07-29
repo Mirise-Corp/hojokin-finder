@@ -1,0 +1,14 @@
+# 作業用スクリプト（HTML一括置換などの使い捨てスクリプト）
+*.py
+# ただしフック用の自動更新スクリプトは追跡する
+!update_header_date.py
+
+# Claude Code のローカル設定
+.claude/
+
+# Windows ショートカット
+*.lnk
+
+# 環境変数・認証情報
+.env
+.env.*
