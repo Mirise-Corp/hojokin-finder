@@ -21,6 +21,16 @@
 
 **共有するURLは必ず `https://hojokin-finder.pages.dev`（固定URL）を使うこと。**
 
+### 作業フォルダ・複数PC運用の原則（重要）
+
+このプロジェクトは**複数PCで作業しても問題が起きないよう**、次の原則で運用する（2026-07-29 確立）。
+
+- **唯一の正は GitHubリモート `Mirise-Corp/hojokin-finder`**。ローカルフォルダはどのPCでも「そのcloneコピー」にすぎない。パス（ユーザー名・場所）はPCごとに違ってよい。**絶対パスを正としない**。
+- **作業フォルダは各PCのローカルディスクに置く**（例：`C:\Users\<ユーザー名>\Desktop\Claude-work\ミライズ_LINEモックアップ`）。
+- **OneDrive配下（`OneDrive - 伊勢山会計\デスクトップ\...`）に作業フォルダを置かない**。OneDrive同期だと複数PCが同じ同期フォルダを見て競合し、フォルダの二重化・スタブ化・「削除予定」化などの事故が起きる（2026-07に実際に発生）。
+- **作業の型は必ず「pull → 編集 → push」**。作業を始める前に `git pull origin main` で最新化し、終えたら `git push origin main`。これでPCが変わっても食い違わない。
+- 別PC（または新規）で始めるときは、下の「初回セットアップ」でローカルにcloneしてから作業する。
+
 ### Git操作
 
 **認証方式：Git Credential Manager（Windows資格情報マネージャー）**
@@ -49,17 +59,18 @@ git push origin main
 ```
 
 #### 初回セットアップ（新PCの場合）
+**ローカルディスク上の任意の場所**（OneDrive配下は避ける）で、リモートをcloneするだけ。
 ```bash
-git init
-git remote add origin https://github.com/Mirise-Corp/hojokin-finder.git
+cd "C:/Users/<ユーザー名>/Desktop/Claude-work"   # OneDrive配下でない場所
+git clone https://github.com/Mirise-Corp/hojokin-finder.git ミライズ_LINEモックアップ
+cd ミライズ_LINEモックアップ
 git config credential.helper manager
 git config user.name "mato6627-cpu"
 git config user.email "mato6627@gmail.com"
-git branch -M main
-git fetch origin
-git merge origin/main --allow-unrelated-histories -X ours -m "Initial setup"
 ```
-初回 `git push` 時にGCMの認証ダイアログが出る → GitHubアカウント（mato6627-cpu）でサインインすれば以降は不要。
+初回の `git push`（または clone）時にGCMの認証ダイアログが出る → GitHubアカウント（mato6627-cpu）でサインインすれば以降は不要。
+
+※ フォルダが空でない場所に入れる場合のみ、`git clone` の代わりに `git init` → `git remote add origin <URL>` → `git fetch origin` → `git checkout -b main --track origin/main`（既存の非管理ファイルは残る）。
 
 #### 認証がおかしくなった時
 古いトークン付きURLや期限切れの資格情報が残っていると push が401で弾かれる。
@@ -76,16 +87,16 @@ git remote set-url origin https://github.com/Mirise-Corp/hojokin-finder.git
 ### Claude起動ショートカット
 `Claude起動.lnk` をフォルダ内に作成済み。ダブルクリックでこのプロジェクトのClaude Codeが直接開く。
 
-- **ショートカットの場所：** `C:\Users\Iseyama-67\OneDrive - 伊勢山会計\デスクトップ\Claude-work\ミライズ_LINEモックアップ\Claude起動.lnk`
+- **ショートカットの場所：** `C:\Users\Iseyama-67\Desktop\Claude-work\ミライズ_LINEモックアップ\Claude起動.lnk`（このPCの例。OneDrive配下ではなくローカルDesktop）
 - **起動先：** `C:\Users\Iseyama-67\AppData\Roaming\npm\node_modules\@anthropic-ai\claude-code\bin\claude.exe`
-- **作業ディレクトリ：** `C:\Users\Iseyama-67\OneDrive - 伊勢山会計\デスクトップ\Claude-work\ミライズ_LINEモックアップ`
+- **作業ディレクトリ：** cloneしたローカルフォルダ（このPCでは `C:\Users\Iseyama-67\Desktop\Claude-work\ミライズ_LINEモックアップ`）
 
-新PCでショートカットを作り直す場合はPowerShellで：
+新PCでショートカットを作り直す場合はPowerShellで（パスは各PCのclone先に合わせる）：
 ```powershell
 $shell = New-Object -ComObject WScript.Shell
-$lnk = $shell.CreateShortcut("C:\Users\[ユーザー名]\OneDrive - 伊勢山会計\デスクトップ\Claude-work\ミライズ_LINEモックアップ\Claude起動.lnk")
+$lnk = $shell.CreateShortcut("C:\Users\[ユーザー名]\Desktop\Claude-work\ミライズ_LINEモックアップ\Claude起動.lnk")
 $lnk.TargetPath = "C:\Users\[ユーザー名]\AppData\Roaming\npm\node_modules\@anthropic-ai\claude-code\bin\claude.exe"
-$lnk.WorkingDirectory = "C:\Users\[ユーザー名]\OneDrive - 伊勢山会計\デスクトップ\Claude-work\ミライズ_LINEモックアップ"
+$lnk.WorkingDirectory = "C:\Users\[ユーザー名]\Desktop\Claude-work\ミライズ_LINEモックアップ"
 $lnk.Save()
 ```
 
@@ -103,7 +114,7 @@ $lnk.Save()
         "hooks": [
           {
             "type": "command",
-            "command": "python \"C:\\Users\\[ユーザー名]\\OneDrive - 伊勢山会計\\デスクトップ\\Claude-work\\ミライズ_LINEモックアップ\\update_header_date.py\""
+            "command": "python \"C:\\Users\\[ユーザー名]\\Desktop\\Claude-work\\ミライズ_LINEモックアップ\\update_header_date.py\""
           }
         ]
       }
