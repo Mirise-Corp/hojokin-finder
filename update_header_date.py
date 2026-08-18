@@ -1,47 +1,56 @@
 # -*- coding: utf-8 -*-
 """
-PostToolUse hook: index.html を編集したとき、ヘッダーの更新日を自動で今日の日付に更新する。
-Claude Code の hooks.PostToolUse（matcher: Edit|Write）から stdin で JSON を受け取る。
+PostToolUse hook: このプロジェクトの index.html を編集したときだけ、
+ヘッダーの「更新日：」の日付を今日に書き換える。
 
-・書き込み先は「実際に編集されたファイル」から決める（絶対パスを埋め込まない）。
-  複数PC運用のため、PCごとに違うclone先でもそのまま動く。
-・更新するのは更新日の部分だけ。件数（補助金N件・助成金M件）は書き換えない。
+- 編集対象がこのプロジェクトの index.html でなければ、何もせず終了する
+  （他プロジェクトの index.ts などで誤発火しないようにするため）
+- 書き換えるのは日付部分のみ。件数表記やHTML全体には触らない
 """
 import sys
 import json
-import os
 import re
+from pathlib import Path
+from datetime import date
+
+TARGET = (Path(__file__).resolve().parent / "index.html")
 
 try:
     sys.stdin.reconfigure(encoding='utf-8')
 except Exception:
     pass
 
-try:
+
+def main():
     data = json.load(sys.stdin)
-    target = data.get('tool_input', {}).get('file_path', '')
+    file_path = data.get('tool_input', {}).get('file_path', '')
+    if not file_path:
+        return
 
-    # index.html を編集したときだけ動く
-    if os.path.basename(target).lower() != 'index.html':
-        sys.exit(0)
-    if not os.path.isfile(target):
-        sys.exit(0)
+    try:
+        edited = Path(file_path).resolve()
+    except Exception:
+        return
 
-    from datetime import date
+    # このプロジェクトの index.html 以外は対象外
+    if edited != TARGET:
+        return
+    if not TARGET.exists():
+        return
 
-    with open(target, 'r', encoding='utf-8') as f:
-        html = f.read()
-
+    html = TARGET.read_text(encoding='utf-8')
     d = date.today()
     new_html, n = re.subn(
         r'(更新日：)\d{4}/\d{1,2}/\d{1,2}',
-        lambda m: f'{m.group(1)}{d.year}/{d.month}/{d.day}',
+        r'\g<1>%d/%d/%d' % (d.year, d.month, d.day),
         html,
+        count=1,
     )
-
     if n and new_html != html:
-        with open(target, 'w', encoding='utf-8') as f:
-            f.write(new_html)
+        TARGET.write_text(new_html, encoding='utf-8')
 
+
+try:
+    main()
 except Exception:
     pass  # エラーが起きても Claude の作業を止めない
