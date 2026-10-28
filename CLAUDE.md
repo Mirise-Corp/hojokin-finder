@@ -681,6 +681,12 @@ https://hojokin-finder.pages.dev#agefriendly
 - `biyou_kaerumono.html` ← 美容業版
 - `kaigo_kaerumono.html` ← 介護福祉業版
 - `iryou_kaerumono.html` ← 医療業版
+- `shukuhaku_kaerumono.html` ← 宿泊業版（2026-10追加）
+- `it_kaerumono.html` ← IT業版（2026-10追加）
+- `service_kaerumono.html` ← サービス業版（2026-10追加）
+- `nourin_kaerumono.html` ← 農林水産業版（2026-10追加）
+
+業種の並び・区分はLINE回答フォームの業種選択に合わせる（製造→建設→運送→小売→飲食→美容→医療→介護→宿泊→IT→サービス→農林水産）。フォームの「医業・介護」は医療業・介護福祉業の2ページに分けたまま運用（2026-10ユーザー判断）。ページ冒頭には早期相談メッセージ（半年前着手・検討段階でも相談OK）を大きく表示し、よくある質問（Q&A）カードは載せない。
 
 ### 公開URL
 - `https://hojokin-finder.pages.dev/kaerumono_index.html`

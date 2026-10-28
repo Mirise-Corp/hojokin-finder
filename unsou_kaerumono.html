@@ -338,15 +338,19 @@
 </div>
 
 <div class="ind-bar">
-  <a class="ind-chip" href="kaerumono_index.html" style="background:#f0faf4;color:#06C755;border-color:#06C755;">📋 一覧</a>
-  <a class="ind-chip" href="kensetsu_kaerumono.html">🏗️ 建設・解体業</a>
-  <a class="ind-chip" href="seizou_kaerumono.html">🏭 製造業</a>
-  <div class="ind-chip active">🚛 運送業</div>
-  <a class="ind-chip" href="inshoku_kaerumono.html">🍽️ 飲食業</a>
-  <a class="ind-chip" href="iryou_kaerumono.html">🏥 医療業</a>
-  <a class="ind-chip" href="kaigo_kaerumono.html">🧓 介護福祉業</a>
-  <a class="ind-chip" href="kouri_kaerumono.html">🛒 小売業</a>
-  <a class="ind-chip" href="biyou_kaerumono.html">💇 美容業</a>
+  <a class="ind-chip" href="kaerumono_index.html" style="background:#f0faf4;color:#06C755;border-color:#06C755;text-decoration:none;">📋 一覧</a>
+  <a class="ind-chip" href="seizou_kaerumono.html" style="text-decoration:none;">🏭 製造業</a>
+  <a class="ind-chip" href="kensetsu_kaerumono.html" style="text-decoration:none;">🏗️ 建設・解体業</a>
+  <div class="ind-chip active" id="indActive">🚛 運送業</div>
+  <a class="ind-chip" href="kouri_kaerumono.html" style="text-decoration:none;">🛒 小売業</a>
+  <a class="ind-chip" href="inshoku_kaerumono.html" style="text-decoration:none;">🍽️ 飲食業</a>
+  <a class="ind-chip" href="biyou_kaerumono.html" style="text-decoration:none;">💇 美容業</a>
+  <a class="ind-chip" href="iryou_kaerumono.html" style="text-decoration:none;">🏥 医療業</a>
+  <a class="ind-chip" href="kaigo_kaerumono.html" style="text-decoration:none;">🧓 介護福祉業</a>
+  <a class="ind-chip" href="shukuhaku_kaerumono.html" style="text-decoration:none;">🏨 宿泊業</a>
+  <a class="ind-chip" href="it_kaerumono.html" style="text-decoration:none;">💻 IT業</a>
+  <a class="ind-chip" href="service_kaerumono.html" style="text-decoration:none;">🧰 サービス業</a>
+  <a class="ind-chip" href="nourin_kaerumono.html" style="text-decoration:none;">🌾 農林水産業</a>
 </div>
 
 
@@ -583,7 +587,8 @@ function applyFilter() {
     });
     sec.dataset.empty = secVisible === 0 ? 'true' : 'false';
   });
-  document.getElementById('visibleCount').textContent = visible;
+  const vc = document.getElementById('visibleCount');
+  if (vc) vc.textContent = visible;
 }
 
 function openModal(ci, ii) {
@@ -614,6 +619,9 @@ function closeModalOnBg(e) {
 }
 
 renderCatalog();
+
+// 選択中の業種チップを表示位置へ
+(function(){ const a = document.getElementById('indActive'); if (a) a.parentNode.scrollLeft = a.offsetLeft - 70; })();
 </script>
 </body>
 </html>

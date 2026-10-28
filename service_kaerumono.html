@@ -1,0 +1,716 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>サービス業｜補助金で買えるもの図鑑</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", sans-serif;
+    background: #f0f0f0;
+    color: #222;
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: linear-gradient(135deg, #06C755 0%, #00A546 100%);
+    color: white;
+    padding: 14px 16px 14px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .header-icon {
+    width: 38px; height: 38px;
+    background: rgba(255,255,255,0.22);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+  .header h1 { font-size: 20px; font-weight: 700; line-height: 1.3; }
+  .header-sub { display: none; font-size: 13px; opacity: 0.9; margin-top: 2px; }
+
+  /* ─── INDUSTRY SWITCHER ─── */
+  .ind-bar {
+    background: white;
+    padding: 10px 12px 8px;
+    border-bottom: 1px solid #e8e8e8;
+    overflow-x: auto;
+    scrollbar-width: none;
+    display: flex; gap: 8px;
+  }
+  .ind-bar::-webkit-scrollbar { display: none; }
+  .ind-chip {
+    flex-shrink: 0;
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 7px 13px;
+    border-radius: 18px;
+    border: 1.5px solid #e0e0e0;
+    background: #fafafa;
+    font-size: 15px;
+    font-weight: 700; color: #555;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .ind-chip.active {
+    background: #06C755; color: white; border-color: #06C755;
+    box-shadow: 0 2px 6px rgba(6,199,85,0.35);
+  }
+  .ind-chip.coming { color: #aaa; background: #f7f7f7; cursor: default; }
+  .ind-chip.coming::after { content: " 準備中"; font-size: 10px; opacity: 0.7; }
+
+  /* ─── SUMMARY BANNER ─── */
+  .summary {
+    background: white;
+    margin: 12px 12px 0;
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .summary-lead {
+    font-size: 14px; line-height: 1.65; color: #333;
+    margin-bottom: 12px;
+  }
+  .summary-lead strong { color: #c0392b; font-weight: 700; }
+  .summary-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .sm-tile {
+    background: #f7faf8;
+    border: 1px solid #d5edd8;
+    border-radius: 10px;
+    padding: 9px 11px;
+  }
+  .sm-tile-label { font-size: 12px; color: #666; margin-bottom: 3px; }
+  .sm-tile-value { font-size: 14px; font-weight: 800; color: #00884a; line-height: 1.25; }
+
+  .summary-subsidies-label {
+    font-size: 12px; font-weight: 700; color: #666;
+    margin-bottom: 6px;
+  }
+  .summary-subsidies {
+    display: flex; flex-wrap: wrap; gap: 5px;
+  }
+  .sub-chip {
+    font-size: 12px; padding: 3px 8px; border-radius: 12px;
+    font-weight: 700; cursor: pointer;
+    transition: all 0.15s; user-select: none;
+  }
+  .sub-chip[data-sub="shoryokuka"]   { background: #fff3e8; color: #b85a00; border: 1.5px solid #ffd9b3; }
+  .sub-chip[data-sub="monozukuri"]   { background: #fff0f0; color: #c0392b; border: 1.5px solid #ffc4c4; }
+  .sub-chip[data-sub="jizokuka"]     { background: #f0faf4; color: #00884a; border: 1.5px solid #b2e8cb; }
+  .sub-chip[data-sub="it"]           { background: #eef3ff; color: #2253c7; border: 1.5px solid #c8d6ff; }
+  .sub-chip[data-sub="gyomukaizen"]  { background: #f3e8ff; color: #6d28d9; border: 1.5px solid #ddc6ff; }
+  .sub-chip[data-sub="shineigi"]     { background: #fefce8; color: #a16207; border: 1.5px solid #fde68a; }
+
+  /* ─── FILTER BAR (sticky) ─── */
+  .filter-bar {
+    background: white;
+    padding: 10px 12px;
+    margin: 12px 0 0;
+    border-top: 1px solid #e8e8e8;
+    border-bottom: 1px solid #e8e8e8;
+    position: sticky;
+    top: 64px;
+    z-index: 90;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+  }
+  .filter-label {
+    font-size: 12px; font-weight: 700; color: #666;
+    margin-bottom: 7px;
+  }
+  .filter-chips {
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .filter-chip {
+    font-size: 13px; padding: 5px 11px;
+    border-radius: 14px; border: 1.5px solid #ddd;
+    background: white; color: #555;
+    font-weight: 600; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filter-chip.active {
+    background: #06C755; color: white; border-color: #06C755;
+  }
+  .filter-chip[data-f="shoryokuka"].active   { background: #f97316; border-color: #f97316; }
+  .filter-chip[data-f="monozukuri"].active   { background: #dc2626; border-color: #dc2626; }
+  .filter-chip[data-f="jizokuka"].active     { background: #06C755; border-color: #06C755; }
+  .filter-chip[data-f="it"].active           { background: #2563eb; border-color: #2563eb; }
+  .filter-chip[data-f="gyomukaizen"].active  { background: #7c3aed; border-color: #7c3aed; }
+  .filter-chip[data-f="shineigi"].active     { background: #b45309; border-color: #b45309; }
+
+  .visible-count {
+    margin: 8px 12px 0; font-size: 12px; color: #777;
+  }
+  .visible-count span { color: #06C755; font-weight: 700; }
+
+  /* ─── CATEGORY SECTION ─── */
+  .cat-section { margin-top: 16px; }
+  .cat-section[data-empty="true"] { display: none; }
+  .cat-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    background: white;
+    margin: 0 12px;
+    border-radius: 12px 12px 0 0;
+    border-bottom: 2px solid #06C755;
+  }
+  .cat-emoji {
+    font-size: 22px; flex-shrink: 0;
+    width: 36px; height: 36px;
+    background: #f0faf4;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cat-title { font-size: 15px; font-weight: 800; color: #222; line-height: 1.3; }
+  .cat-sub   { font-size: 12px; color: #888; margin-top: 1px; }
+  .cat-label {
+    display: inline-block;
+    font-size: 10px; font-weight: 700;
+    background: #444; color: #fff;
+    padding: 1px 6px; border-radius: 5px;
+    margin-right: 5px; vertical-align: middle;
+    letter-spacing: 0.03em;
+  }
+
+  .item-grid {
+    background: white;
+    margin: 0 12px;
+    border-radius: 0 0 14px 14px;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  /* ─── ITEM CARD ─── */
+  .item {
+    background: #fafafa;
+    border: 1.5px solid #eee;
+    border-radius: 11px;
+    padding: 10px 9px 9px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex; flex-direction: column;
+    min-height: 138px;
+    position: relative;
+  }
+  .item:hover { border-color: #06C755; background: white; }
+  .item[data-hidden="true"] { display: none; }
+  .item-visual {
+    text-align: center;
+    font-size: 42px;
+    margin-bottom: 6px;
+    line-height: 1;
+    height: 38px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .item-name {
+    font-size: 17px; font-weight: 700; color: #222;
+    line-height: 1.3; margin-bottom: 4px;
+    min-height: 32px;
+  }
+  .item-desc { display: none;
+    font-size: 12px; color: #666;
+    line-height: 1.4;
+    flex: 1;
+    margin-bottom: 6px;
+  }
+  .item-subs {
+    display: flex; flex-wrap: wrap; gap: 3px;
+    margin-bottom: 4px;
+  }
+  .item-sub-chip {
+    font-size: 10.5px; padding: 2px 6px;
+    border-radius: 8px;
+    font-weight: 700;
+  }
+  .item-sub-chip[data-sub="shoryokuka"]   { background: #fff3e8; color: #b85a00; }
+  .item-sub-chip[data-sub="monozukuri"]   { background: #fff0f0; color: #c0392b; }
+  .item-sub-chip[data-sub="jizokuka"]     { background: #f0faf4; color: #00884a; }
+  .item-sub-chip[data-sub="it"]           { background: #eef3ff; color: #2253c7; }
+  .item-sub-chip[data-sub="gyomukaizen"]  { background: #f3e8ff; color: #6d28d9; }
+  .item-sub-chip[data-sub="shineigi"]     { background: #fefce8; color: #a16207; }
+  .item-price {
+    font-size: 14px; color: #00884a; font-weight: 800;
+    text-align: right;
+  }
+  .item-popular {
+    position: absolute; top: 6px; right: 6px;
+    font-size: 10px; font-weight: 800;
+    background: linear-gradient(135deg, #f59e0b, #fcd34d);
+    color: #78350f;
+    padding: 2px 6px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(245,158,11,0.4);
+  }
+
+  /* ─── MODAL ─── */
+  .modal-back {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: none; align-items: flex-end;
+    z-index: 300;
+  }
+  .modal-back.open { display: flex; }
+  .modal {
+    background: white;
+    width: 100%; max-width: 480px;
+    margin: 0 auto;
+    border-radius: 18px 18px 0 0;
+    padding: 18px 16px 24px;
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: slideUp 0.22s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(40%); opacity: 0.3; }
+    to   { transform: translateY(0); opacity: 1; }
+  }
+  .modal-grip {
+    width: 38px; height: 4px; background: #ddd; border-radius: 4px;
+    margin: -4px auto 12px;
+  }
+  .modal-visual {
+    font-size: 56px; text-align: center;
+    margin-bottom: 10px;
+  }
+  .modal-name {
+    font-size: 17px; font-weight: 800; text-align: center;
+    line-height: 1.3; margin-bottom: 6px;
+  }
+  .modal-cat {
+    font-size: 12px; color: #888; text-align: center;
+    margin-bottom: 14px;
+  }
+  .modal-section { margin-bottom: 14px; }
+  .modal-section-title {
+    font-size: 12px; font-weight: 700; color: #06C755;
+    margin-bottom: 6px; letter-spacing: 0.04em;
+  }
+  .modal-section-body {
+    font-size: 14px; color: #333; line-height: 1.7;
+  }
+  .modal-budget {
+    background: #f6faf7; border: 1px solid #d5edd8;
+    border-radius: 10px; padding: 10px 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .modal-budget-label { font-size: 12px; color: #777; }
+  .modal-budget-value { font-size: 16px; font-weight: 800; color: #00884a; flex: 1; text-align: right; }
+
+  .modal-sub-list {
+    display: flex; flex-direction: column; gap: 7px;
+  }
+  .modal-sub-item {
+    border: 1.5px solid;
+    border-radius: 10px;
+    padding: 9px 11px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .modal-sub-item[data-sub="shoryokuka"]   { border-color: #ffd9b3; background: #fff8f0; }
+  .modal-sub-item[data-sub="monozukuri"]   { border-color: #ffc4c4; background: #fff5f5; }
+  .modal-sub-item[data-sub="jizokuka"]     { border-color: #b2e8cb; background: #f4fbf6; }
+  .modal-sub-item[data-sub="it"]           { border-color: #c8d6ff; background: #f4f7ff; }
+  .modal-sub-item[data-sub="gyomukaizen"]  { border-color: #ddc6ff; background: #f8f4ff; }
+  .modal-sub-item[data-sub="shineigi"]     { border-color: #fde68a; background: #fffdf0; }
+  .modal-sub-icon { font-size: 22px; flex-shrink: 0; }
+  .modal-sub-text { flex: 1; }
+  .modal-sub-name { font-size: 14px; font-weight: 700; color: #222; }
+  .modal-sub-amt  { font-size: 12px; color: #666; margin-top: 1px; }
+
+  .modal-cta {
+    display: block; width: 100%;
+    background: #06C755; color: white;
+    border: none; border-radius: 12px;
+    padding: 14px;
+    font-size: 14px; font-weight: 700;
+    text-decoration: none; text-align: center;
+    margin-top: 14px; cursor: pointer;
+    box-shadow: 0 3px 10px rgba(6,199,85,0.35);
+  }
+  .modal-close {
+    position: absolute; top: 14px; right: 14px;
+    background: rgba(0,0,0,0.06); border: none;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    font-size: 16px; color: #555;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ─── FOOTER CTA ─── */
+  .footer-cta {
+    margin: 24px 12px 12px;
+    padding: 16px;
+    background: white;
+    border-radius: 14px;
+    text-align: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .footer-cta-text {
+    font-size: 14px; color: #444; line-height: 1.6;
+    margin-bottom: 12px;
+  }
+  .footer-cta-btn {
+    display: inline-block;
+    background: #06C755; color: white;
+    padding: 12px 22px; border-radius: 22px;
+    font-size: 13px; font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 3px 10px rgba(6,199,85,0.35);
+  }
+  .footer-note {
+    text-align: center; padding: 12px;
+    font-size: 12px; color: #999;
+    line-height: 1.5;
+  }
+  .fab {
+    position: fixed; bottom: 18px; right: 16px;
+    background: #06C755; color: white; border: none;
+    border-radius: 22px; padding: 10px 16px;
+    font-size: 12px; font-weight: 700;
+    box-shadow: 0 4px 14px rgba(6,199,85,0.45);
+    cursor: pointer;
+    z-index: 200;
+  }
+
+  /* ─── 早期相談メッセージ ─── */
+  .early-msg {
+    margin: 12px 12px 0;
+    padding: 16px 16px 14px;
+    background: linear-gradient(135deg, #fff4e6 0%, #ffe8d1 100%);
+    border: 2.5px solid #f97316;
+    border-radius: 16px;
+    box-shadow: 0 3px 12px rgba(249,115,22,0.22);
+    text-align: center;
+  }
+  .early-msg-title {
+    font-size: 22px; font-weight: 900; color: #c2410c;
+    line-height: 1.35; margin-bottom: 10px;
+  }
+  .early-msg-lead {
+    font-size: 16px; font-weight: 700; color: #333;
+    line-height: 1.6; margin-bottom: 12px;
+  }
+  .early-msg-lead strong {
+    color: #c0392b; font-size: 19px;
+    background: linear-gradient(transparent 60%, #fde68a 60%);
+  }
+  .early-msg-ok {
+    background: white; border-radius: 12px;
+    padding: 10px 12px; text-align: left;
+    display: flex; flex-direction: column; gap: 6px;
+    margin-bottom: 10px;
+  }
+  .early-msg-ok div { font-size: 16px; font-weight: 700; color: #222; line-height: 1.45; }
+  .early-msg-foot { font-size: 17px; font-weight: 900; color: #06A046; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div class="header-icon">🧰</div>
+    <div>
+      <h1>サービス業｜補助金で買えるもの図鑑</h1>
+      <div class="header-sub">受付省人化・清掃・新サービス・集客</div>
+    </div>
+  </div>
+</div>
+
+<!-- 早期相談メッセージ -->
+<div class="early-msg">
+  <div class="early-msg-title">📣 補助金は<br>「とにかく早めの相談」が大切です</div>
+  <div class="early-msg-lead">申請から発注できるまで約6か月。<br><strong>遅くとも半年前には着手</strong>が必要です。</div>
+  <div class="early-msg-ok">
+    <div>✅ 購入がまだ決まっていなくても大丈夫</div>
+    <div>✅ 「予定している」段階でも大丈夫</div>
+    <div>✅ 「考えているだけ」でも大丈夫</div>
+  </div>
+  <div class="early-msg-foot">まずはお気軽にご相談ください</div>
+</div>
+
+<!-- INDUSTRY SWITCHER -->
+<div class="ind-bar">
+  <a class="ind-chip" href="kaerumono_index.html" style="background:#f0faf4;color:#06C755;border-color:#06C755;text-decoration:none;">📋 一覧</a>
+  <a class="ind-chip" href="seizou_kaerumono.html" style="text-decoration:none;">🏭 製造業</a>
+  <a class="ind-chip" href="kensetsu_kaerumono.html" style="text-decoration:none;">🏗️ 建設・解体業</a>
+  <a class="ind-chip" href="unsou_kaerumono.html" style="text-decoration:none;">🚛 運送業</a>
+  <a class="ind-chip" href="kouri_kaerumono.html" style="text-decoration:none;">🛒 小売業</a>
+  <a class="ind-chip" href="inshoku_kaerumono.html" style="text-decoration:none;">🍽️ 飲食業</a>
+  <a class="ind-chip" href="biyou_kaerumono.html" style="text-decoration:none;">💇 美容業</a>
+  <a class="ind-chip" href="iryou_kaerumono.html" style="text-decoration:none;">🏥 医療業</a>
+  <a class="ind-chip" href="kaigo_kaerumono.html" style="text-decoration:none;">🧓 介護福祉業</a>
+  <a class="ind-chip" href="shukuhaku_kaerumono.html" style="text-decoration:none;">🏨 宿泊業</a>
+  <a class="ind-chip" href="it_kaerumono.html" style="text-decoration:none;">💻 IT業</a>
+  <div class="ind-chip active" id="indActive">🧰 サービス業</div>
+  <a class="ind-chip" href="nourin_kaerumono.html" style="text-decoration:none;">🌾 農林水産業</a>
+</div>
+
+
+
+<!-- ITEM CATALOG -->
+<div id="catalog"></div>
+
+<div class="footer-note">
+  ※ 補助金は申請から発注まで約6か月かかります<br>
+  ※ 採択を保証するものではありません。詳細は税理士事務所までお問い合わせください
+  <div style="margin-top:6px;color:#bbb;">監修：ミライズ会計事務所</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-back" id="modalBack" onclick="closeModalOnBg(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-grip"></div>
+    <div class="modal-visual" id="mVisual"></div>
+    <div class="modal-name" id="mName"></div>
+    <div class="modal-cat" id="mCat"></div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">📝 こんな課題に</div>
+      <div class="modal-section-body" id="mUsecase"></div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">💰 価格イメージ</div>
+      <div class="modal-budget">
+        <span class="modal-budget-label">本体・導入費</span>
+        <span class="modal-budget-value" id="mPrice"></span>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">🎯 使える補助金</div>
+      <div class="modal-sub-list" id="mSubsidies"></div>
+    </div>
+
+  </div>
+</div>
+
+<button class="fab" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆ トップ</button>
+
+<script>
+// ─── 補助金マスター ───
+const SUBS = {
+  shoryokuka:  { name: "省力化投資補助金", icon: "🤖", amt: "500万〜1億円・補助率1/2〜2/3" },
+  monozukuri:  { name: "ものづくり補助金 / 新事業進出統合", icon: "⚙️", amt: "750万〜3,500万・補助率1/2〜2/3" },
+  jizokuka:    { name: "小規模事業者持続化補助金", icon: "📣", amt: "50万〜250万・補助率2/3〜3/4" },
+  it:          { name: "AI導入補助金", icon: "🤖", amt: "5万〜450万・補助率1/2〜4/5" },
+  gyomukaizen: { name: "業務改善助成金（賃上げ＋設備）", icon: "💼", amt: "30万〜600万" },
+  shineigi:    { name: "新事業進出補助金", icon: "🚀", amt: "750万〜9,000万・補助率1/2〜2/3" },
+};
+
+// ─── サービス業 買えるものデータ ───
+const CATEGORIES = [
+  {
+    title: "受付・予約・会計の省人化",
+    sub: "少ない人数でもお客様を待たせない",
+    emoji: "🛎️",
+    items: [
+      { v:"💳", name:"セルフレジ・自動精算機", desc:"", price:"100万〜300万", subs:["shoryokuka","gyomukaizen"], popular:true,
+        uc:"会計をお客様自身で。受付・会計のスタッフをサービス提供に回せます。" },
+      { v:"📅", name:"予約・顧客管理システム", desc:"", price:"月1万〜・初期10万〜", subs:["it","gyomukaizen"], popular:true,
+        uc:"ネット予約と顧客台帳を一元管理。電話対応の時間とダブルブッキングを減らせます。" },
+      { v:"🎫", name:"券売機・受付発券機", desc:"", price:"50万〜200万", subs:["shoryokuka","gyomukaizen"],
+        uc:"受付と順番待ちの案内を自動化。混雑時の受付対応がスムーズになります。" },
+      { v:"🔑", name:"無人受付・入退室システム", desc:"", price:"50万〜300万", subs:["shoryokuka","jizokuka"],
+        uc:"24時間営業のジム・レンタルスペースなどで、スタッフがいない時間も営業できます。" },
+      { v:"🧾", name:"POSレジ（タブレット型）", desc:"", price:"10万〜50万", subs:["it","gyomukaizen"],
+        uc:"売上・在庫・顧客情報を自動で集計。インボイス制度に対応したレジへの入れ替えにも。" },
+      { v:"💬", name:"LINE予約・自動応答ツール", desc:"", price:"月1万〜", subs:["it","jizokuka"],
+        uc:"LINEで予約受付やリマインド配信を自動化。無断キャンセルの防止にも役立ちます。" },
+    ]
+  },
+  {
+    title: "清掃・洗濯・作業の省力化",
+    sub: "裏方の作業時間を減らす",
+    emoji: "🧺",
+    items: [
+      { v:"🤖", name:"清掃ロボット", desc:"", price:"150万〜400万", subs:["shoryokuka","gyomukaizen"], popular:true,
+        uc:"営業時間外に床清掃を自動で。開店前・閉店後の清掃にかかる人手を減らします。" },
+      { v:"🧽", name:"自動床洗浄機", desc:"", price:"100万〜400万", subs:["shoryokuka","gyomukaizen"],
+        uc:"広い施設の床洗いを短時間で仕上げます。" },
+      { v:"🧺", name:"業務用洗濯乾燥機", desc:"", price:"100万〜500万", subs:["shoryokuka","gyomukaizen"],
+        uc:"タオル・ユニフォームなどを自社で効率よく洗濯。コインランドリーの開業・入れ替えにも。" },
+      { v:"👔", name:"クリーニング自動仕上げ機", desc:"", price:"200万〜800万", subs:["shoryokuka","monozukuri"],
+        uc:"シャツ・衣類のプレス仕上げを自動化。熟練スタッフでなくても同じ品質で仕上げられます。" },
+      { v:"🚗", name:"門型自動洗車機", desc:"", price:"500万〜1,500万", subs:["shoryokuka","monozukuri"],
+        uc:"自動車整備・ガソリンスタンドで洗車作業を自動化。手洗い洗車の人手を減らせます。" },
+      { v:"🔧", name:"タイヤチェンジャー・整備用リフト", desc:"", price:"100万〜500万", subs:["shoryokuka","gyomukaizen"],
+        uc:"自動車整備の作業時間を短縮。タイヤ交換シーズンの繁忙期も少ない人数で対応できます。" },
+    ]
+  },
+  {
+    title: "新しいサービスの立ち上げ",
+    sub: "今のお客様とは違う客層へ広げる",
+    emoji: "🚀",
+    items: [
+      { v:"🏋️", name:"24時間ジム・パーソナル設備", desc:"", price:"500万〜2,000万", subs:["monozukuri","jizokuka"],
+        uc:"トレーニング機器と無人運営の仕組みで新しいサービスを開始。" },
+      { v:"📸", name:"撮影スタジオ・撮影ブース", desc:"", price:"100万〜500万", subs:["monozukuri","jizokuka"],
+        uc:"証明写真・家族写真・商品撮影など、撮影サービスの新規立ち上げに。" },
+      { v:"🧖", name:"サウナ・リラクゼーション設備", desc:"", price:"300万〜1,500万", subs:["monozukuri"],
+        uc:"体験型のサービスを新たに始めることで、新しい客層を取り込めます。" },
+      { v:"🖨️", name:"オリジナル商品の製作機器", desc:"", price:"50万〜500万", subs:["monozukuri","jizokuka"],
+        uc:"3Dプリンタ・刺しゅう機・レーザー加工機などで、名入れやオリジナルグッズの製作サービスを。" },
+      { v:"🎓", name:"オンライン講座・配信スタジオ", desc:"", price:"50万〜300万", subs:["jizokuka","monozukuri"],
+        uc:"教室・スクールの授業をオンラインでも提供。通えない地域のお客様にも広げられます。" },
+      { v:"🧳", name:"出張サービス用の機材", desc:"", price:"50万〜300万", subs:["jizokuka"],
+        uc:"お客様の自宅や会社に出向くサービスのための機材一式。※車両は原則として対象外です。" },
+    ]
+  },
+  {
+    title: "集客・店舗づくり",
+    sub: "お客様に知ってもらい、選ばれるために",
+    emoji: "📣",
+    items: [
+      { v:"🏠", name:"店舗改装・内装リニューアル", desc:"", price:"100万〜500万", subs:["jizokuka"], popular:true,
+        uc:"入りやすく、居心地のよい店舗に。新しいお客様の獲得につながる改装が対象です。" },
+      { v:"🪧", name:"看板・サイン", desc:"", price:"20万〜200万", subs:["jizokuka"],
+        uc:"通りから見つけてもらえる看板に。店舗の場所がわかりにくい場合に特に効果があります。" },
+      { v:"🌐", name:"ホームページ・予約サイト", desc:"", price:"30万〜150万", subs:["jizokuka","it"],
+        uc:"スマホで探すお客様にも見つけてもらえるように。※持続化補助金ではWeb関連費は全体の1/4までです。" },
+      { v:"📄", name:"チラシ・DM・パンフレット", desc:"", price:"10万〜80万", subs:["jizokuka"],
+        uc:"商圏のお客様に直接届ける販促物。新サービスの告知にも。" },
+      { v:"♿", name:"バリアフリー化", desc:"", price:"50万〜300万", subs:["jizokuka"],
+        uc:"スロープ・手すり・段差解消などで、高齢のお客様も利用しやすい店舗に。" },
+      { v:"📱", name:"Web広告・SNS広告", desc:"", price:"10万〜100万", subs:["jizokuka"],
+        uc:"地域や年代を絞って広告を出せます。※持続化補助金ではWeb関連費は全体の1/4までです。" },
+    ]
+  },
+];
+
+// ─── 描画 ───
+function renderCatalog() {
+  const root = document.getElementById('catalog');
+  root.innerHTML = '';
+  CATEGORIES.forEach((cat, ci) => {
+    const sec = document.createElement('div');
+    sec.className = 'cat-section';
+    sec.dataset.cat = ci;
+
+    const head = document.createElement('div');
+    head.className = 'cat-header';
+    head.innerHTML = `
+      <div class="cat-emoji">${cat.emoji}</div>
+      <div>
+        <div class="cat-title"><span class="cat-label">分類</span>${cat.title}</div>
+        <div class="cat-sub">${cat.sub}</div>
+      </div>`;
+    sec.appendChild(head);
+
+    const grid = document.createElement('div');
+    grid.className = 'item-grid';
+
+    cat.items.forEach((it, ii) => {
+      const subsHtml = it.subs.map(s => `<span class="item-sub-chip" data-sub="${s}">${SUBS[s].name.replace('補助金','').replace('助成金','').slice(0,5)}</span>`).join('');
+      const card = document.createElement('div');
+      card.className = 'item';
+      card.dataset.subs = it.subs.join(',');
+      card.innerHTML = `
+        ${it.popular ? '<div class="item-popular">🔥 人気</div>' : ''}
+        <div class="item-visual">${it.v}</div>
+        <div class="item-name">${it.name}</div>
+        <div class="item-desc">${it.desc}</div>
+        <div class="item-subs">${subsHtml}</div>
+        <div class="item-price">💰 ${it.price}</div>`;
+      card.onclick = () => openModal(ci, ii);
+      grid.appendChild(card);
+    });
+    sec.appendChild(grid);
+    root.appendChild(sec);
+  });
+  applyFilter();
+}
+
+// ─── フィルタ ───
+let currentFilter = 'all';
+function setFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-chip').forEach(c => {
+    c.classList.toggle('active', c.dataset.f === f);
+  });
+  // also highlight matching summary chip
+  document.querySelectorAll('.sub-chip').forEach(c => {
+    c.style.outline = (c.dataset.sub === f) ? '2px solid #06C755' : 'none';
+    c.style.outlineOffset = '1px';
+  });
+  applyFilter();
+  // scroll to first category area
+  window.scrollTo({ top: document.querySelector('.filter-bar').offsetTop - 60, behavior: 'smooth' });
+}
+function applyFilter() {
+  let visible = 0;
+  document.querySelectorAll('.cat-section').forEach(sec => {
+    let secVisible = 0;
+    sec.querySelectorAll('.item').forEach(card => {
+      const subs = card.dataset.subs.split(',');
+      const ok = currentFilter === 'all' || subs.includes(currentFilter);
+      card.dataset.hidden = ok ? 'false' : 'true';
+      if (ok) { secVisible++; visible++; }
+    });
+    sec.dataset.empty = secVisible === 0 ? 'true' : 'false';
+  });
+  const vc = document.getElementById('visibleCount');
+  if (vc) vc.textContent = visible;
+}
+
+// ─── モーダル ───
+function openModal(ci, ii) {
+  const it = CATEGORIES[ci].items[ii];
+  document.getElementById('mVisual').textContent = it.v;
+  document.getElementById('mName').textContent = it.name;
+  document.getElementById('mCat').textContent = CATEGORIES[ci].title;
+  document.getElementById('mUsecase').textContent = it.uc;
+  document.getElementById('mPrice').textContent = it.price;
+  const sl = document.getElementById('mSubsidies');
+  sl.innerHTML = it.subs.map(s => `
+    <div class="modal-sub-item" data-sub="${s}">
+      <div class="modal-sub-icon">${SUBS[s].icon}</div>
+      <div class="modal-sub-text">
+        <div class="modal-sub-name">${SUBS[s].name}</div>
+        <div class="modal-sub-amt">${SUBS[s].amt}</div>
+      </div>
+    </div>`).join('');
+  document.getElementById('modalBack').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('modalBack').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeModalOnBg(e) {
+  if (e.target.id === 'modalBack') closeModal();
+}
+
+renderCatalog();
+
+// 選択中の業種チップを表示位置へ
+(function(){ const a = document.getElementById('indActive'); if (a) a.parentNode.scrollLeft = a.offsetLeft - 70; })();
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
