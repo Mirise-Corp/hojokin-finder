@@ -178,6 +178,37 @@
   .ind-tile[data-ind="biyou"]:hover { border-color: #d81b60; }
 
 
+
+  /* ─── 早期相談メッセージ ─── */
+  .early-msg {
+    margin: 12px 12px 0;
+    padding: 16px 16px 14px;
+    background: linear-gradient(135deg, #fff4e6 0%, #ffe8d1 100%);
+    border: 2.5px solid #f97316;
+    border-radius: 16px;
+    box-shadow: 0 3px 12px rgba(249,115,22,0.22);
+    text-align: center;
+  }
+  .early-msg-title {
+    font-size: 22px; font-weight: 900; color: #c2410c;
+    line-height: 1.35; margin-bottom: 10px;
+  }
+  .early-msg-lead {
+    font-size: 16px; font-weight: 700; color: #333;
+    line-height: 1.6; margin-bottom: 12px;
+  }
+  .early-msg-lead strong {
+    color: #c0392b; font-size: 19px;
+    background: linear-gradient(transparent 60%, #fde68a 60%);
+  }
+  .early-msg-ok {
+    background: white; border-radius: 12px;
+    padding: 10px 12px; text-align: left;
+    display: flex; flex-direction: column; gap: 6px;
+    margin-bottom: 10px;
+  }
+  .early-msg-ok div { font-size: 16px; font-weight: 700; color: #222; line-height: 1.45; }
+  .early-msg-foot { font-size: 17px; font-weight: 900; color: #06A046; }
 </style>
 </head>
 <body>
@@ -186,6 +217,19 @@
 <div class="hero">
   <div class="hero-icon">📋</div>
   <h1>補助金で買えるもの<br>（業種別）図鑑</h1>
+</div>
+
+
+<!-- 早期相談メッセージ -->
+<div class="early-msg">
+  <div class="early-msg-title">📣 補助金は<br>「とにかく早めの相談」が大切です</div>
+  <div class="early-msg-lead">申請から発注できるまで約6か月。<br><strong>遅くとも半年前には着手</strong>が必要です。</div>
+  <div class="early-msg-ok">
+    <div>✅ 購入がまだ決まっていなくても大丈夫</div>
+    <div>✅ 「予定している」段階でも大丈夫</div>
+    <div>✅ 「考えているだけ」でも大丈夫</div>
+  </div>
+  <div class="early-msg-foot">まずはお気軽にご相談ください</div>
 </div>
 
 
